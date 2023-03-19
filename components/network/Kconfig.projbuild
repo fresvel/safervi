@@ -1,0 +1,299 @@
+
+menu "Funciones de Red"
+    
+    orsource "../env_caps/$IDF_TARGET/Kconfig.env_caps"
+    #orsource "../../../../../esp/esp-idf/examples/common_components/env_caps/$IDF_TARGET/Kconfig.env_caps"
+    #orsource "$IDF_PATH/examples/common_components/env_caps/$IDF_TARGET/Kconfig.env_caps"
+    
+    menu "Wifi"
+        menu  "Estación Wifi"
+            config STA_ENABLE
+                bool "Habiliar estacion Wifi"
+                default y
+                help
+                    Protocol examples can use Wi-Fi and/or Ethernet to connect to the network.
+                    Choose this option to connect with WiFi
+
+            if STA_ENABLE
+
+                config STA_WIFI_SSID
+                    string "WiFi SSID"
+                    default "Fresvel"
+                    help
+                        SSID (nombre de la red) a la que se va a conectar.
+
+                config STA_WIFI_PASSWORD
+                    string "WiFi Password"
+                    default "FresvelSafervi"
+                    help
+                        Contraseña WiFi  (WPA or WPA2) de la red a la que se va a conectar.
+                        Dejar vacío para conectarse a una red abierta.
+
+                config STA_WIFI_CONN_MAX_RETRY
+                    int "Maximum retry"
+                    default 6
+                    help
+                        Configuración del número máximo de intentos para establecer conexión con el AP.
+
+                choice STA_WIFI_SCAN_METHOD
+                    prompt "WiFi Scan Method"
+                    default STA_WIFI_SCAN_METHOD_FAST
+                    help
+                        WiFi scan method:
+
+                        If "Fast" is selected, scan will end after find SSID match AP.
+
+                        If "All Channel" is selected, scan will end after scan all the channel.
+
+                    config STA_WIFI_SCAN_METHOD_FAST
+                        bool "Fast"
+                    config STA_WIFI_SCAN_METHOD_ALL_CHANNEL
+                        bool "All Channel"
+                endchoice
+
+                menu "WiFi Scan threshold"
+                    config STA_WIFI_SCAN_RSSI_THRESHOLD
+                        int "WiFi minimum rssi"
+                        range -127 0
+
+                        default -127
+                        help
+                            The minimum rssi to accept in the scan mode.
+
+                    choice STA_WIFI_SCAN_AUTH_MODE_THRESHOLD
+                        prompt "WiFi Scan auth mode threshold"
+                        default STA_WIFI_AUTH_OPEN
+                        help
+                            The weakest authmode to accept in the scan mode.
+
+                        config STA_WIFI_AUTH_OPEN
+                            bool "OPEN"
+                        config STA_WIFI_AUTH_WEP
+                            bool "WEP"
+                        config STA_WIFI_AUTH_WPA_PSK
+                            bool "WPA PSK"
+                        config STA_WIFI_AUTH_WPA2_PSK
+                            bool "WPA2 PSK"
+                        config STA_WIFI_AUTH_WPA_WPA2_PSK
+                            bool "WPA WPA2 PSK"
+                        config STA_WIFI_AUTH_WPA2_ENTERPRISE
+                            bool "WPA2 ENTERPRISE"
+                        config STA_WIFI_AUTH_WPA3_PSK
+                            bool "WPA3 PSK"
+                        config STA_WIFI_AUTH_WPA2_WPA3_PSK
+                            bool "WPA2 WPA3 PSK"
+                        config STA_WIFI_AUTH_WAPI_PSK
+                            bool "WAPI PSK"
+                    endchoice
+                endmenu
+
+                choice STA_WIFI_CONNECT_AP_SORT_METHOD
+                    prompt "WiFi Connect AP Sort Method"
+                    default STA_WIFI_CONNECT_AP_BY_SIGNAL
+                    help
+                        WiFi connect AP sort method:
+
+                        If "Signal" is selected, Sort matched APs in scan list by RSSI.
+
+                        If "Security" is selected, Sort matched APs in scan list by security mode.
+
+                    config STA_WIFI_CONNECT_AP_BY_SIGNAL
+                        bool "Signal"
+                    config STA_WIFI_CONNECT_AP_BY_SECURITY
+                        bool "Security"
+                endchoice
+            endif
+        endmenu
+    
+        menu "Punto de Acceso"
+            config AP_ENABLE
+                bool "Habiliar Punto de Acceso"
+                default y
+                help
+                    Protocol examples can use Wi-Fi and/or Ethernet to connect to the network.
+                    Choose this option to connect with WiFi
+
+            if AP_ENABLE
+                config AP_WIFI_SSID
+                    string "WiFi SSID"
+                    default "Safervi"
+                    help
+                        SSID (network name) for the example to connect to.
+            
+                config AP_WIFI_PASSWORD
+                    string "WiFi Password"
+                    default "FresvelSafervi"
+                    help
+                        WiFi password (WPA or WPA2) for the example to use.
+                config AP_WIFI_CHANNEL
+                    int "WiFi Channel"
+                    range 1 13
+                    default 1
+                    help
+                        WiFi channel (network channel) for the example to use.
+            
+                config AP_MAX_STA_CONN
+                    int "Maximal STA connections"
+                    default 4
+                    help
+                        Max number of the STA connects to AP.
+
+                choice AP_WIFI_AUTH_MODE
+                    prompt "Modo de Authenticación"
+                    default AP_WIFI_AUTH_WPA_WPA2_PSK
+                    help
+                        The weakest authmode to accept in the scan mode.
+
+                    config AP_WIFI_AUTH_OPEN
+                        bool "OPEN"
+                    config AP_WIFI_AUTH_WPA_PSK
+                        bool "WPA PSK"
+                    config AP_WIFI_AUTH_WPA2_PSK
+                        bool "WPA2 PSK"
+                    config AP_WIFI_AUTH_WPA_WPA2_PSK
+                        bool "WPA WPA2 PSK"
+                endchoice
+                
+            endif
+        endmenu
+    
+    endmenu
+
+    
+    
+    menu "Ethernet"
+        config ETH_ENABLE
+            bool "Habilitar conexión Ethernet"
+            default n
+            help
+                Protocol examples can use Wi-Fi and/or Ethernet to connect to the network.
+                Choose this option to connect with Ethernet
+
+        if ETH_ENABLE
+            config ETH_EMAC_TASK_STACK_SIZE
+                int "emac_rx task stack size"
+                default 2048
+                help
+                    This set stack size for emac_rx task
+
+            config ETH_USE_SPI
+                bool
+
+
+
+
+            
+            config ETH_SPI_HOST
+                int "SPI Host Number"
+                range 0 2
+                default 1
+                help
+                    Set the SPI host used to communicate with the SPI Ethernet Controller.
+
+            config ETH_SPI_SCLK_GPIO
+                int "SPI SCLK GPIO number"
+                range ENV_GPIO_RANGE_MIN ENV_GPIO_OUT_RANGE_MAX
+                default 14
+                help
+                    Set the GPIO number used by SPI SCLK.
+
+            config ETH_SPI_MOSI_GPIO
+                int "SPI MOSI GPIO number"
+                range ENV_GPIO_RANGE_MIN ENV_GPIO_OUT_RANGE_MAX
+                default 13
+                help
+                    Set the GPIO number used by SPI MOSI.
+
+            config ETH_SPI_MISO_GPIO
+                int "SPI MISO GPIO number"
+                range ENV_GPIO_RANGE_MIN ENV_GPIO_IN_RANGE_MAX
+                default 12
+                help
+                    Set the GPIO number used by SPI MISO.
+
+            config ETH_SPI_CS_GPIO
+                int "SPI CS GPIO number"
+                range ENV_GPIO_RANGE_MIN ENV_GPIO_OUT_RANGE_MAX
+                default 15
+                help
+                    Set the GPIO number used by SPI CS.
+
+            config ETH_SPI_CLOCK_MHZ
+                int "SPI clock speed (MHz)"
+                range 5 80
+                default 32 
+                help
+                    Set the clock speed (MHz) of SPI interface.
+
+            config ETH_SPI_INT_GPIO
+                int "Interrupt GPIO number"
+                range ENV_GPIO_RANGE_MIN ENV_GPIO_IN_RANGE_MAX
+                default 4
+                help
+                    Set the GPIO number used by the SPI Ethernet module interrupt line.
+
+            config ETH_PHY_RST_GPIO
+                int "PHY Reset GPIO number"
+                range -1 ENV_GPIO_OUT_RANGE_MAX
+                default 5
+                help
+                    Set the GPIO number used to reset PHY chip.
+                    Set to -1 to disable PHY chip hardware reset.
+
+            config ETH_PHY_ADDR
+                int "PHY Address"
+                default -1
+                help
+                    Set PHY address according your board schematic.
+        endif # EXAMPLE_CONNECT_ETHERNET
+    endmenu
+
+    menu "IPv6"
+        config EXAMPLE_CONNECT_IPV6
+            depends on STA_ENABLE || ETH_ENABLE
+            bool "Obtain IPv6 address"
+            default y
+            select LWIP_IPV6
+            help
+                By default, examples will wait until IPv4 and IPv6 local link addresses are obtained.
+                Disable this option if the network does not support IPv6.
+                Choose the preferred IPv6 address type if the connection code should wait until other than
+                the local link address gets assigned.
+                Consider enabling IPv6 stateless address autoconfiguration (SLAAC) in the LWIP component.
+
+        if EXAMPLE_CONNECT_IPV6
+            choice EXAMPLE_CONNECT_PREFERRED_IPV6
+                prompt "Preferred IPv6 Type"
+                default EXAMPLE_CONNECT_IPV6_PREF_LOCAL_LINK
+                help
+                    Select which kind of IPv6 address the connect logic waits for.
+
+                config EXAMPLE_CONNECT_IPV6_PREF_LOCAL_LINK
+                    bool "Local Link Address"
+                    help
+                        Blocks until Local link address assigned.
+
+                config EXAMPLE_CONNECT_IPV6_PREF_GLOBAL
+                    bool "Global Address"
+                    help
+                        Blocks until Global address assigned.
+
+                config EXAMPLE_CONNECT_IPV6_PREF_SITE_LOCAL
+                    bool "Site Local Address"
+                    help
+                        Blocks until Site link address assigned.
+
+                config EXAMPLE_CONNECT_IPV6_PREF_UNIQUE_LOCAL
+                    bool "Unique Local Link Address"
+                    help
+                        Blocks until Unique local address assigned.
+
+            endchoice
+
+        endif
+    endmenu
+
+    menu "Bluetooth"
+    endmenu
+
+endmenu
