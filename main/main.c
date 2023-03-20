@@ -1,26 +1,17 @@
-//#include <string.h>
-//#include <inttypes.h>
-//#include "freertos/FreeRTOS.h"
-//#include "freertos/task.h"
-//#include "esp_system.h"
 #include "esp_event.h"
-//#include "esp_log.h"
-//#include "esp_ota_ops.h"
-//#include "esp_app_format.h"
-//#include "esp_http_client.h"
-//#include "esp_flash_partitions.h"
-//#include "esp_partition.h"
-
-//#include "driver/gpio.h"
-
-//#include "errno.h"
-
 #include "network.h"
 #include "nvs.h"
 #include "nvs_flash.h"
+#include "esp_log.h"
+
+const char *TAG="Safervi";
 
 void app_main(void)
 {
+
+    ESP_LOGI(TAG, "Iniciando programa, Leyendo Archivo");
+    //ESP_LOGI(TAG, "%s", index_html);
+
     esp_err_t err = nvs_flash_init();
     if (err == ESP_ERR_NVS_NO_FREE_PAGES || err == ESP_ERR_NVS_NEW_VERSION_FOUND) {
         ESP_ERROR_CHECK(nvs_flash_erase());
@@ -41,5 +32,9 @@ void app_main(void)
     esp_wifi_set_ps(WIFI_PS_NONE);
 #endif // CONFIG_EXAMPLE_CONNECT_WIFI
     printf("SafervI! Sistemas de Seguridad y Domótica\n");
+
+
+    extern const uint8_t index_html[] asm("_binary_index_html_start");
+    ESP_LOGI(TAG, "Archivo HTML: %s", index_html);
 
 }
