@@ -1,0 +1,74 @@
+{
+    "network":{
+    "sta":{
+        "enabled":true,
+        "ssid":"Fresvel",
+        "password":"FresvelSafervi",
+        "dhcp":true,
+        "ip_add":"192.168.1.100",
+        "ip_net":"255.255.255.0",
+        "ip_gw":"",
+        "dns_add":"",
+        "dns_alt":"",
+        "ip6_add":"",
+        "ip6_gw":"",
+        "dns6_add":"",
+        "dns6_alt":"",
+        "max_retry":-1
+    },
+    "ap":{
+        "enabled":true,
+        "ssid":"",
+        "password":"",
+        "ip_add":"",
+        "ip_net":"",
+        "ip_gw":"",
+        "ip6_add":"",
+        "ip6_gw":"",
+        "ip6_type":"",
+        "aut_mod":"",
+        "channel":1,
+        "max_sta":0
+    },
+    "eth":{
+        "enabled":true,
+        "ip_add":"",
+        "ip_net":"",
+        "ip_gw":"",
+        "ip6_add":"",
+        "ip6_gw":"",
+        "dns6_add":"",
+        "dns6_alt":"",
+        "ip6_type":"",
+        "channel":1,
+        "max_sta":0
+    }
+    },
+
+    "protocol":{
+    "mqtt":{
+        "url": "",
+        "port":1883,
+        "tls":false,
+        "client_id":"",
+        "user_id":"",
+        "password":""
+    },
+
+    "ws_client":{
+        "url": "",
+        "port":1883,
+        "tls":false,
+        "client_id":"",
+        "user_id":"",
+        "password":""
+    },
+    "ws_server":{
+        "port":1883,
+        "tls":false,
+        "username":"",
+        "password":""
+    }
+    }
+
+}

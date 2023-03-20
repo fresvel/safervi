@@ -4,7 +4,9 @@
 #include "nvs_flash.h"
 #include "esp_log.h"
 
-const char *TAG="Safervi";
+#include "flash.h"
+
+static const char *TAG="Safervi";
 
 void app_main(void)
 {
@@ -35,6 +37,19 @@ void app_main(void)
 
 
     extern const uint8_t index_html[] asm("_binary_index_html_start");
-    ESP_LOGI(TAG, "Archivo HTML: %s", index_html);
+    ESP_LOGW(TAG, "Archivo HTML: %s", index_html);
+
+    show_file();
+
+    ESP_LOGI(TAG, "Estado de init%s", esp_err_to_name(flash_network_init()));
+    flash_sta_t sta_config = {};
+
+    ESP_LOGE(TAG, "Estado de GET %s", esp_err_to_name(flash_sta_get(&sta_config)));
+
+    flash_sta_t sta_rec = {};
+
+    ESP_LOGE(TAG, "Estado de GET %s",esp_err_to_name(flash_sta_write(flash_sta_get(&sta_config))));
+
+    
 
 }
