@@ -70,9 +70,9 @@ esp_err_t flash_sta_get(flash_sta_t* flash_sta);
 
 esp_err_t flash_sta_write(flash_sta_t* flash_sta);
 
-esp_err_t flash_ast_get(flash_ast_t* flash_ast);
+esp_err_t flash_write_label(void* flash_value, const char* label, size_t req_size);
 
-esp_err_t flash_ast_write(flash_ast_t* flash_ast);
+esp_err_t flash_get_label(void* flash_buff, const char* label, size_t req_size);
 
 esp_err_t flash_network_init();
 

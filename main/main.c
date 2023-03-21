@@ -41,34 +41,31 @@ void app_main(void)
 
     ESP_LOGI(TAG, "Estado de init%s", esp_err_to_name(flash_network_init()));
     
-    flash_sta_t sta_config = {};
-    ESP_LOGE(TAG, "Estado de GET %s", esp_err_to_name(flash_sta_get(&sta_config)));
-
-
-
-
-
+    flash_sta_t* sta_config;
+    size_t req_size = sizeof(flash_sta_t);
+    printf("req_size = %d\n", req_size);
+    sta_config = malloc(req_size);
+    esp_err_t ret = flash_get_label(sta_config, "sta", req_size);
+    if (ret == ESP_OK) {
+        printf("ssid:%s  passwd: %s max: %ld\n", sta_config->ssid, sta_config->password, sta_config->max_retry);
+    }
+    ESP_LOGI(TAG, "Estado de GET %s",esp_err_to_name(ret));
+    free(sta_config);
+    
 
     flash_sta_t* flash_sta;
-    size_t req_size = sizeof(flash_sta_t);
+    //size_t req_size = sizeof(flash_sta_t);
     flash_sta = malloc(req_size);
-
     strcpy((char*)flash_sta->ssid, "Fresvel");
-    //sprintf(flash_sta->ssid, "Kira");
     strcpy((char*)flash_sta->password, "FresvelSafervi");
-    //sprintf(flash_sta->password, "KiraFresvel");
     flash_sta->max_retry = 12;
-    
-    
-    
-    
-    ESP_LOGE(TAG, "Estado de write %s",esp_err_to_name(flash_sta_write(flash_sta)));
-
+    ESP_LOGE(TAG, "Estado de write %s",esp_err_to_name(flash_write_label(flash_sta, "sta", req_size)));
+    free(flash_sta);
     
 
 
 
-
+    
     /*FUNCIONES AST
     flash_ast_t ast_config = {};
     ESP_LOGE(TAG, "Estado de GET %s", esp_err_to_name(flash_ast_get(&ast_config)));
