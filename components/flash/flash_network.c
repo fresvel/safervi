@@ -9,33 +9,28 @@ esp_err_t flash_sta_get(flash_sta_t* flash_sta){
     nvs_handle_t flash_handle;
     esp_err_t err;
 
-    err = nvs_open_from_partition("network", "sta",NVS_READWRITE,&flash_handle);
-    if (err != ESP_OK) return err;
-
-    size_t req_size = 0;
-    
-    err = nvs_get_blob(flash_handle, "sta", NULL, &req_size);
-    ESP_LOGW(TAG, "Req size: %d", req_size);
-    if (err != ESP_OK && err != ESP_ERR_NVS_NOT_FOUND) return err;
-
-
-
-
-    ESP_LOGW(TAG, "Datos obtenidos");
-    if (req_size == 0) {
-        printf("Memoria vacía\n");
-    } else {
-        flash_sta = malloc(req_size);
-        err = nvs_get_blob(flash_handle, "sta", flash_sta, &req_size);
-        if (err != ESP_OK) {
-            free(flash_sta);
-            return err;
-        }
+    err = nvs_open_from_partition("network", "sta",NVS_READONLY,&flash_handle);
+    if (err != ESP_OK){
+        if (err == ESP_ERR_NVS_NOT_FOUND){
+            ESP_LOGW(TAG, "Memoria vacía");
+            return ESP_OK;
+        }else return err;
+    }
         
-        printf("ssid:%s  passwd: %s max: %ld\n", flash_sta->ssid, flash_sta->password, flash_sta->max_retry);
-        
+    size_t req_size = sizeof(flash_sta_t);
+
+    flash_sta = malloc(req_size);
+
+    err = nvs_get_blob(flash_handle, "sta", flash_sta, &req_size);
+    if (err != ESP_OK) {
         free(flash_sta);
-            }
+        return err;
+    }
+    
+    printf("ssid:%s  passwd: %s max: %ld\n", flash_sta->ssid, flash_sta->password, flash_sta->max_retry);
+    
+    free(flash_sta);
+    
     nvs_close(flash_handle);
     return ESP_OK;
 }
