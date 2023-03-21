@@ -6,7 +6,6 @@
 #include <string.h>
 
 typedef struct{
-    bool enabled;
     uint8_t ssid[32];      
     uint8_t password[64];  
     uint8_t channel;
@@ -32,7 +31,6 @@ typedef struct{
 
 
 typedef struct{
-    bool enabled;
     uint8_t ssid[32];      
     uint8_t password[64];  
     uint8_t channel;
@@ -52,7 +50,6 @@ typedef struct{
 
 
 typedef struct{
-    bool enabled;
     esp_ip4_addr_t ip_add;
     esp_ip4_addr_t ip_net;
     esp_ip4_addr_t ip_gw;
@@ -66,13 +63,20 @@ typedef struct{
 } flash_eth_t;
 
 
-esp_err_t flash_sta_get(flash_sta_t* flash_sta);
+typedef struct{
+    bool sta;
+    bool ap;
+    bool eth;
+    bool ast;
+    bool mqtt;
+    bool ws_c;
+    bool ws_s;
+}flash_net_ena_t;
 
-esp_err_t flash_sta_write(flash_sta_t* flash_sta);
 
-esp_err_t flash_write_label(void* flash_value, const char* label, size_t req_size);
+esp_err_t flash__network_write_label(void* flash_value, const char* label, size_t req_size);
 
-esp_err_t flash_get_label(void* flash_buff, const char* label, size_t req_size);
+esp_err_t flash__network_get_label(void* flash_buff, const char* label, size_t req_size);
 
 esp_err_t flash_network_init();
 

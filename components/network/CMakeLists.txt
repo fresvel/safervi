@@ -4,5 +4,5 @@ set(srcs "network.c"
 
 idf_component_register(SRCS "${srcs}"
                        INCLUDE_DIRS "include"
-                       PRIV_REQUIRES esp_netif driver esp_wifi vfs esp_eth)
+                       PRIV_REQUIRES esp_netif driver esp_wifi vfs esp_eth nvs_flash flash)
 

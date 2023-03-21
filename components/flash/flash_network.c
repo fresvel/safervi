@@ -5,90 +5,7 @@
 
 static const char *TAG="NVS";
 
-esp_err_t flash_sta_get(flash_sta_t* flash_sta){
-    nvs_handle_t flash_handle;
-    esp_err_t err;
-    err = nvs_open_from_partition("network", "sta",NVS_READONLY,&flash_handle);
-    if (err != ESP_OK)return err;
-    size_t req_size = sizeof(flash_sta_t);
-    err = nvs_get_blob(flash_handle, "sta", flash_sta, &req_size);
-    if (err != ESP_OK)return err;
-    nvs_close(flash_handle);
-    return ESP_OK;
-}
-
-
-esp_err_t flash_sta_write(flash_sta_t*flash_sta){
-    nvs_handle_t flash_handle;
-    esp_err_t err;
-    err = nvs_open_from_partition("network","sta", NVS_READWRITE, &flash_handle);
-    if (err != ESP_OK) return err;
-    size_t req_size = sizeof(flash_sta_t);
-    err = nvs_set_blob(flash_handle, "sta", flash_sta, req_size);
-    if (err != ESP_OK) return err;
-    err = nvs_commit(flash_handle);
-    if (err != ESP_OK) return err;
-    nvs_close(flash_handle);
-    return ESP_OK;
-}
-
-esp_err_t flash_ap_get(flash_sta_t*flash_ap){
-    nvs_handle_t flash_handle;
-    esp_err_t err;
-    err = nvs_open_from_partition("network", "ap",NVS_READONLY,&flash_handle);
-    if (err != ESP_OK) return err;
-    size_t req_size = sizeof(flash_sta_t);
-    err = nvs_get_blob(flash_handle, "ap", flash_ap, &req_size);
-    if (err != ESP_OK) return err;
-    nvs_close(flash_handle);
-    return ESP_OK;
-}
-
-esp_err_t flash_ap_write(flash_sta_t*flash_ap){
-    nvs_handle_t flash_handle;
-    esp_err_t err;
-    err = nvs_open_from_partition("network","ap", NVS_READWRITE, &flash_handle);
-    if (err != ESP_OK) return err;
-    size_t req_size = sizeof(flash_sta_t);
-    err = nvs_set_blob(flash_handle, "ap", flash_ap, req_size);
-    if (err != ESP_OK) return err;
-    err = nvs_commit(flash_handle);
-    if (err != ESP_OK) return err;
-    nvs_close(flash_handle);
-    return ESP_OK;
-}
-
-esp_err_t flash_eth_get(flash_eth_t*flash_eth){
-    nvs_handle_t flash_handle;
-    esp_err_t err;
-    err = nvs_open_from_partition("network", "eth",NVS_READONLY,&flash_handle);
-    if (err != ESP_OK) return err;
-    size_t req_size = sizeof(flash_sta_t);
-    err = nvs_get_blob(flash_handle, "eth", flash_eth, &req_size);
-    if (err != ESP_OK) return err;
-    nvs_close(flash_handle);
-    return ESP_OK;
-}
-
-esp_err_t flash_eth_write(flash_eth_t*flash_eth){
-    nvs_handle_t flash_handle;
-    esp_err_t err;
-    err = nvs_open_from_partition("network","eth", NVS_READWRITE, &flash_handle);
-    if (err != ESP_OK) return err;
-    size_t req_size = sizeof(flash_sta_t);
-    err = nvs_set_blob(flash_handle, "eth", flash_eth, req_size);
-    if (err != ESP_OK) return err;
-    err = nvs_commit(flash_handle);
-    if (err != ESP_OK) return err;
-    nvs_close(flash_handle);
-    return ESP_OK;
-}
-
-
-
-
-
-esp_err_t flash_get_label(void* flash_buff, const char* label, size_t req_size){
+esp_err_t flash__network_get_label(void* flash_buff, const char* label, size_t req_size){
     nvs_handle_t flash_handle;
     esp_err_t err;
     err = nvs_open_from_partition("network", label, NVS_READONLY,&flash_handle);
@@ -99,7 +16,7 @@ esp_err_t flash_get_label(void* flash_buff, const char* label, size_t req_size){
     return ESP_OK;
 }
 
-esp_err_t flash_write_label(void* flash_value, const char* label, size_t req_size){
+esp_err_t flash__network_write_label(void* flash_value, const char* label, size_t req_size){
     nvs_handle_t flash_handle;
     esp_err_t err;
     err = nvs_open_from_partition("network",label, NVS_READWRITE, &flash_handle);
