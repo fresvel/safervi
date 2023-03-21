@@ -6,10 +6,10 @@
 #include <string.h>
 
 typedef struct{
-    //bool enabled;
+    bool enabled;
     uint8_t ssid[32];      
     uint8_t password[64];  
-    /*uint8_t channel;
+    uint8_t channel;
     bool dhcp;
     esp_ip4_addr_t ip_add;
     esp_ip4_addr_t ip_net;
@@ -21,9 +21,14 @@ typedef struct{
     esp_ip6_addr_type_t ip6_type;
     esp_ip6_addr_t dns6_add;
     esp_ip6_addr_t dns6_alt;
-    */
     uint32_t max_retry;           
 } flash_sta_t;
+
+typedef struct{
+    uint8_t ssid[32];      
+    uint8_t password[64];  
+    uint32_t max_retry;           
+} flash_ast_t;
 
 
 typedef struct{
@@ -64,6 +69,11 @@ typedef struct{
 esp_err_t flash_sta_get(flash_sta_t* flash_sta);
 
 esp_err_t flash_sta_write(flash_sta_t* flash_sta);
+
+esp_err_t flash_ast_get(flash_ast_t* flash_ast);
+
+esp_err_t flash_ast_write(flash_ast_t* flash_ast);
+
 esp_err_t flash_network_init();
 
 void show_file(void);
