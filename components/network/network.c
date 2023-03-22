@@ -81,7 +81,7 @@ esp_err_t network_set_flash_default(){
 
     flash_net_ena_t flash_net_ena={
         .eth =true,
-        .sta =false,
+        .sta =true,
         .ap =true,
     };
 
@@ -89,7 +89,7 @@ esp_err_t network_set_flash_default(){
     printf("req_size = %d\n", req_size);
 
     ESP_LOGW(TAG, "Escritura de enable: %s",esp_err_to_name(flash__network_write_label(&flash_net_ena, "ena", req_size)));
-
+    
 
 
         flash_sta_t flash_sta={
@@ -175,11 +175,7 @@ esp_err_t network_set_flash_default(){
     printf("req_size = %d\n", req_size);
 
     ESP_LOGW(TAG, "Escritura de AST: %s", esp_err_to_name(flash__network_write_label(&flash_ast, "ast", req_size)));
-
-
-
-
-        return ESP_OK;
+    return ESP_OK;
 
 }
 
@@ -193,7 +189,6 @@ esp_err_t network_set_flash_default(){
 esp_err_t network_connect(void)
 {
 
-
     ESP_LOGI(TAG, "Estado de init%s", esp_err_to_name(flash_network_init()));
 
     flash_net_ena_t* net_ena;
@@ -201,35 +196,30 @@ esp_err_t network_connect(void)
     size_t req_size = sizeof(flash_net_ena_t);
     net_ena = malloc(req_size);
     esp_err_t ret = flash__network_get_label(net_ena, "ena", req_size);
+    
     if (ret == ESP_OK) {
         printf("eth:%d  sta: %d ap: %d\n", net_ena->eth, net_ena->sta, net_ena->ap);
+    
+    
     }else if(ret == ESP_ERR_NVS_NOT_FOUND){
-        printf("EJECUTAR ESCRITURA DE MEMORIA Y CONFIGURAR DEFAULT\n");
-
-        network_set_flash_default();
-        //Crear función write default
-        //Validar la posibilidad de enviar una estructura por defecto
-
-        //free(net_ena);  
+        ESP_ERROR_CHECK(network_set_flash_default());
+        ESP_LOGW(TAG, "Memoria grabada, reiniciando el dispositivo");
+        ESP_ERROR_CHECK(flash__network_get_label(net_ena, "ena", req_size));
+        ESP_LOGI(TAG,"eth:%d  sta: %d ap: %d\n", net_ena->eth, net_ena->sta, net_ena->ap);
     }else {
         free(net_ena);
         return ret;
-        }
+    }
     ESP_LOGI(TAG, "Estado de Enable %s",esp_err_to_name(ret));
-    
-    
     free(net_ena);
 
 
 
 
-
-
-
-
-
-
 #if CONFIG_ETH_ENABLE
+
+
+
     if (ethernet_init() != ESP_OK) {
         ESP_LOGE(TAG, "No se puede establecer conexión Ethernet");
         return ESP_FAIL;

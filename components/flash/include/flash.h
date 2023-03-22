@@ -63,14 +63,13 @@ typedef struct{
     bool ast;
 }flash_net_ena_t;
 
-
+//Evaluar la posibilidad de usar o no, se crea un acceso global a las variables por defecto
 typedef struct{
-    flas_net_ena_t ena;
+    flash_net_ena_t ena;
     flash_sta_t sta;
     flash_eth_t eth;
     flash_ap_t ap;
     flash_ast_t ast;
-
 }flash_net_def_t;
 
 
