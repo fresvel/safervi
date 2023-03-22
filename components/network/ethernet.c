@@ -27,7 +27,7 @@ static SemaphoreHandle_t s_semph_get_ip_addrs = NULL;
 static SemaphoreHandle_t s_semph_get_ip6_addrs = NULL;
 #endif
 
-static esp_netif_t *eth_start(void);
+
 static void eth_stop(void);
 static esp_eth_handle_t s_eth_handle = NULL;
 static esp_eth_mac_t *s_mac = NULL;
@@ -47,7 +47,7 @@ static void eth_on_got_ip(void *arg, esp_event_base_t event_base,
         return;
     }
     ESP_LOGI(TAG, "Got IPv4 event: Interface \"%s\" address: " IPSTR, esp_netif_get_desc(event->esp_netif), IP2STR(&event->ip_info.ip));
-    xSemaphoreGive(s_semph_get_ip_addrs);
+    //xSemaphoreGive(s_semph_get_ip_addrs);
 }
 
 #if CONFIG_EXAMPLE_CONNECT_IPV6
@@ -63,10 +63,12 @@ static void eth_on_got_ipv6(void *arg, esp_event_base_t event_base,
     ESP_LOGI(TAG, "Got IPv6 event: Interface \"%s\" address: " IPV6STR ", type: %s", esp_netif_get_desc(event->esp_netif),
              IPV62STR(event->ip6_info.ip), example_ipv6_addr_types_to_str[ipv6_type]);
     if (ipv6_type == EXAMPLE_CONNECT_PREFERRED_IPV6_TYPE) {
-        xSemaphoreGive(s_semph_get_ip6_addrs);
+        //xSemaphoreGive(s_semph_get_ip6_addrs);
     }
 }
 
+
+/*
 static void on_eth_event(void *esp_netif, esp_event_base_t event_base,
                          int32_t event_id, void *event_data)
 {
@@ -80,20 +82,19 @@ static void on_eth_event(void *esp_netif, esp_event_base_t event_base,
     }
 }
 
+*/
+
 #endif // CONFIG_EXAMPLE_CONNECT_IPV6
 
 
-static void eth_event_handler(void *arg, esp_event_base_t event_base,
+static void eth_event_handler(void *esp_netif, esp_event_base_t event_base,
                               int32_t event_id, void *event_data)
 {
 
     switch (event_id) {
     case ETHERNET_EVENT_CONNECTED:
         ESP_LOGI(TAG, "Ethernet Link Up");
-        //s_ethernet_is_connected = true;
-        //esp_eth_ioctl(s_eth_handle, ETH_CMD_G_MAC_ADDR, s_eth_mac);//Posible conflicto con administrador de tareas
-        //esp_wifi_set_mac(WIFI_IF_AP, s_eth_mac); //Valor de s_eth_mac??
-        //ESP_ERROR_CHECK(esp_wifi_start()); //Se inicializa wifi
+        ESP_ERROR_CHECK(esp_netif_create_ip6_linklocal(esp_netif));
         break;
     case ETHERNET_EVENT_DISCONNECTED:
         ESP_LOGI(TAG, "Ethernet Link Down");
@@ -114,9 +115,9 @@ static void eth_event_handler(void *arg, esp_event_base_t event_base,
 
 
 
-static esp_netif_t *eth_start(void)
+void eth_start(flash_eth_t *flash_eth)
 {
-    ESP_ERROR_CHECK(esp_event_handler_register(ETH_EVENT, ESP_EVENT_ANY_ID, eth_event_handler, NULL));  //Solo L2
+      //***Solo L2
     eth_mac_config_t mac_config = ETH_MAC_DEFAULT_CONFIG();
     mac_config.rx_task_stack_size = CONFIG_ETH_EMAC_TASK_STACK_SIZE;                       //Solo L3
     eth_phy_config_t phy_config = ETH_PHY_DEFAULT_CONFIG();
@@ -166,24 +167,26 @@ static esp_netif_t *eth_start(void)
     esp_netif_t *netif = esp_netif_new(&netif_config);
     assert(netif);
 
-
-
-
-
     s_eth_glue = esp_eth_new_netif_glue(s_eth_handle);
     esp_netif_attach(netif, s_eth_glue);
     ESP_ERROR_CHECK(esp_event_handler_register(IP_EVENT, IP_EVENT_ETH_GOT_IP, &eth_on_got_ip, NULL));
 
 
 
-#ifdef CONFIG_EXAMPLE_CONNECT_IPV6
-    ESP_ERROR_CHECK(esp_event_handler_register(ETH_EVENT, ETHERNET_EVENT_CONNECTED, &on_eth_event, netif));
-    ESP_ERROR_CHECK(esp_event_handler_register(IP_EVENT, IP_EVENT_GOT_IP6, &eth_on_got_ipv6, NULL));
-#endif
 
-    esp_eth_start(s_eth_handle);
+    ESP_ERROR_CHECK(esp_event_handler_register(ETH_EVENT, ESP_EVENT_ANY_ID, eth_event_handler, netif));
+    //ESP_ERROR_CHECK(esp_event_handler_register(ETH_EVENT, ETHERNET_EVENT_CONNECTED, &on_eth_event, netif));
+    ESP_ERROR_CHECK(esp_event_handler_register(IP_EVENT, IP_EVENT_GOT_IP6, &eth_on_got_ipv6, NULL));
+    esp_err_t ret=esp_eth_start(s_eth_handle);
     
-    return NULL;
+    if (ret==ESP_OK)
+    {
+        ESP_LOGI(TAG, "Configuración Ethernet finalizada, esperando direcciones IP");
+        ESP_ERROR_CHECK(esp_register_shutdown_handler(&ethernet_shutdown));
+    }else{
+        ESP_LOGE(TAG, "Error en configuración Ethernet %s", esp_err_to_name(ret));
+    }
+    vTaskDelete(NULL);
 }
 
 
@@ -195,10 +198,15 @@ static esp_netif_t *eth_start(void)
 static void eth_stop(void)
 {
     esp_netif_t *eth_netif = get_netif_from_desc(ETH_NETIF_DESC);
+
+
+    ESP_ERROR_CHECK(esp_event_handler_unregister(ETH_EVENT, ESP_EVENT_ANY_ID, eth_event_handler));
+    
+    
     ESP_ERROR_CHECK(esp_event_handler_unregister(IP_EVENT, IP_EVENT_ETH_GOT_IP, &eth_on_got_ip));
 #if CONFIG_EXAMPLE_CONNECT_IPV6
     ESP_ERROR_CHECK(esp_event_handler_unregister(IP_EVENT, IP_EVENT_GOT_IP6, &eth_on_got_ipv6));
-    ESP_ERROR_CHECK(esp_event_handler_unregister(ETH_EVENT, ETHERNET_EVENT_CONNECTED, &on_eth_event));
+    //ESP_ERROR_CHECK(esp_event_handler_unregister(ETH_EVENT, ETHERNET_EVENT_CONNECTED, &on_eth_event));
 #endif
     ESP_ERROR_CHECK(esp_eth_stop(s_eth_handle));
     ESP_ERROR_CHECK(esp_eth_del_netif_glue(s_eth_glue));
@@ -230,7 +238,7 @@ void ethernet_shutdown(void)
     eth_stop();
 }
 
-
+/*FUNCIIÓN PARA VALIDAR CONEXIÓN DE ETHERNET, USANDO SEMÁFOROS
 void ethernet_init(void)
 {
     s_semph_get_ip_addrs = xSemaphoreCreateBinary();
@@ -252,9 +260,10 @@ void ethernet_init(void)
 #endif
 
     eth_start();
-    ESP_LOGI(TAG, "Esperando direcciones IP(s).");
+    ESP_LOGW(TAG, "Esperando direcciones IP(s). de Etherner");
     xSemaphoreTake(s_semph_get_ip_addrs, portMAX_DELAY);
 #if CONFIG_EXAMPLE_CONNECT_IPV6
+    ESP_LOGW(TAG, "Esperando direcciones IP(s). de Etherner IPV6");
     xSemaphoreTake(s_semph_get_ip6_addrs, portMAX_DELAY);
 #endif
     //reducir valores de los semáforos y validar valores de retorno
@@ -263,3 +272,4 @@ void ethernet_init(void)
     vTaskDelete(NULL);
     //return ESP_OK;
 }
+*/

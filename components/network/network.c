@@ -13,7 +13,7 @@
 #include "lwip/err.h"
 #include "lwip/sys.h"
 
-#include "flash.h"
+
 
 static const char *TAG = "Network:";
 
@@ -222,21 +222,30 @@ esp_err_t network_connect(void)
 
 #if CONFIG_ETH_ENABLE
 
+    flash_eth_t *flash_eth;
+    req_size=sizeof(flash_eth_t);
+    flash_eth=malloc(req_size);
+    ESP_ERROR_CHECK(flash__network_get_label(flash_eth, "eth", req_size));
+    xTaskCreate(eth_start,"Ethernet",4096,&flash_eth,10,NULL);
 
-xTaskCreate(ethernet_init,"Ethernet",2048,NULL,10,NULL);
-
-/*
-    if (ethernet_init() != ESP_OK) {
-        ESP_LOGE(TAG, "No se puede establecer conexión Ethernet");
-        return ESP_FAIL;
-    }
-    ESP_ERROR_CHECK(esp_register_shutdown_handler(&ethernet_shutdown));
-
-*/
 #endif// CREAR UNA TAREA ETHERNET
 
 
 #if CONFIG_STA_ENABLE || CONFIG_AP_ENABLE 
+
+uint8_t wifi_ena=net_ena->ap*1+net_ena->sta*2;
+
+
+switch(wifi_ena){
+    case 1:
+
+    break;
+    case 2:
+    break;
+    case 3:
+    break;
+}
+
 
 
 

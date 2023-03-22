@@ -11,6 +11,8 @@
 #include "esp_wifi.h"
 #include "sdkconfig.h"
 
+#include "flash.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -42,7 +44,7 @@ bool is_our_netif(const char *prefix, esp_netif_t *netif);
 void print_all_netif_ips(const char *prefix);
 void wifi_shutdown_driver();
 void ethernet_shutdown(void);
-void ethernet_init(void);
+void eth_start(flash_eth_t *flash_eth);
 esp_err_t wifi_driver_init(wifi_mode_t mode);
 
 #ifdef __cplusplus
