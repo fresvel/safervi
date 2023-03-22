@@ -5,62 +5,55 @@
 #include <nvs_flash.h>
 #include <string.h>
 
+typedef uint8_t dhcp_type_t;
+
+#define NET_DHCP_NULL (0)
+#define NET_DHCP_CLIENT (1)
+#define NET_DHCP_SERVER (2)
+
 typedef struct{
     uint8_t ssid[32];      
     uint8_t password[64];  
     uint8_t channel;
-    bool dhcp;
-    esp_ip4_addr_t ip_add;
-    esp_ip4_addr_t ip_net;
-    esp_ip4_addr_t ip_gw;
-    esp_ip4_addr_t dns_add;
-    esp_ip4_addr_t dns_alt;
+    dhcp_type_t dhcp;    
+    esp_netif_ip_info_t ip_info;
+    esp_ip4_addr_t dns[3];
     esp_ip6_addr_t ip6_addr;
-    esp_ip6_addr_t ip6_gw;
     esp_ip6_addr_type_t ip6_type;
-    esp_ip6_addr_t dns6_add;
-    esp_ip6_addr_t dns6_alt;
-    uint32_t max_retry;           
+    esp_ip6_addr_t dns6[3];
+    uint8_t max_retry;           
 } flash_sta_t;
 
-typedef struct{
-    uint8_t ssid[32];      
-    uint8_t password[64];  
-    uint32_t max_retry;           
-} flash_ast_t;
-
 
 typedef struct{
     uint8_t ssid[32];      
     uint8_t password[64];  
     uint8_t channel;
-    esp_ip4_addr_t ip_add;
-    esp_ip4_addr_t ip_net;
-    esp_ip4_addr_t ip_gw;
-    esp_ip4_addr_t dns_add;
-    esp_ip4_addr_t dns_alt;
+    esp_netif_ip_info_t ip_info;
+    esp_ip4_addr_t dns;
     esp_ip6_addr_t ip6_addr;
-    esp_ip6_addr_t ip6_gw;
     esp_ip6_addr_type_t ip6_type;
-    esp_ip6_addr_t dns6_add;
-    esp_ip6_addr_t dns6_alt;
-    uint8_t max_sta;
+    esp_ip6_addr_t dns6;
     wifi_auth_mode_t auth_mode;
+    uint8_t max_sta;
 } flash_ap_t;
 
 
+
 typedef struct{
-    esp_ip4_addr_t ip_add;
-    esp_ip4_addr_t ip_net;
-    esp_ip4_addr_t ip_gw;
-    esp_ip4_addr_t dns_add;
-    esp_ip4_addr_t dns_alt;
+    esp_netif_ip_info_t ip_info;
+    esp_ip4_addr_t dns[3];
+    dhcp_type_t dhcp;
     esp_ip6_addr_t ip6_addr;
-    esp_ip6_addr_t ip6_gw;
     esp_ip6_addr_type_t ip6_type;
-    esp_ip6_addr_t dns6_add;
-    esp_ip6_addr_t dns6_alt;
+    esp_ip6_addr_t dns6[3];
 } flash_eth_t;
+
+typedef struct{
+    uint8_t ssid[32];      
+    uint8_t password[64];  
+    uint8_t max_retry;           
+} flash_ast_t;
 
 
 typedef struct{
@@ -68,10 +61,33 @@ typedef struct{
     bool ap;
     bool eth;
     bool ast;
+}flash_net_ena_t;
+
+
+typedef struct{
+    flas_net_ena_t ena;
+    flash_sta_t sta;
+    flash_eth_t eth;
+    flash_ap_t ap;
+    flash_ast_t ast;
+
+}flash_net_def_t;
+
+
+typedef struct{
     bool mqtt;
     bool ws_c;
     bool ws_s;
-}flash_net_ena_t;
+}flash_prot_ena_t;
+
+
+
+
+
+
+
+
+
 
 
 esp_err_t flash__network_write_label(void* flash_value, const char* label, size_t req_size);

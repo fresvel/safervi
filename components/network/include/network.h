@@ -32,6 +32,24 @@ extern "C" {
 #endif
 
 
+
+
+#if CONFIG_AP_WIFI_AUTH_OPEN
+#define AP_WIFI_AUTH_MODE WIFI_AUTH_OPEN
+#elif CONFIG_AP_WIFI_AUTH_WPA_PSK
+#define AP_WIFI_AUTH_MODE WIFI_AUTH_WPA_PSK
+#elif CONFIG_AP_WIFI_AUTH_WPA2_PSK
+#define AP_WIFI_AUTH_MODE WIFI_AUTH_WPA2_PSK
+#elif CONFIG_AP_WIFI_AUTH_WPA_WPA2_PSK
+#define AP_WIFI_AUTH_MODE WIFI_AUTH_WPA_WPA2_PSK
+#endif
+
+
+
+
+
+
+
 esp_err_t network_connect(void);
 esp_err_t network_disconnect(void);
 esp_netif_t *get_netif_from_desc(const char *desc);

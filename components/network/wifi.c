@@ -224,15 +224,7 @@ void wifi_stop_sta(void)
 /////////////////////////////////////////////////////////////////////
 #if CONFIG_AP_ENABLE
 
-#if CONFIG_AP_WIFI_AUTH_OPEN
-#define AP_WIFI_AUTH_MODE WIFI_AUTH_OPEN
-#elif CONFIG_AP_WIFI_AUTH_WPA_PSK
-#define AP_WIFI_AUTH_MODE WIFI_AUTH_WPA_PSK
-#elif CONFIG_AP_WIFI_AUTH_WPA2_PSK
-#define AP_WIFI_AUTH_MODE WIFI_AUTH_WPA2_PSK
-#elif CONFIG_AP_WIFI_AUTH_WPA_WPA2_PSK
-#define AP_WIFI_AUTH_MODE WIFI_AUTH_WPA_WPA2_PSK
-#endif
+
 
 static esp_netif_t *s_ap_netif = NULL;
 

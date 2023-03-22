@@ -59,7 +59,7 @@ esp_err_t flash_ast_get(flash_ast_t* flash_ast){
             return err;
         }
         
-        printf("ssid:%s  passwd: %s max: %ld\n", flash_ast->ssid, flash_ast->password, flash_ast->max_retry);
+        printf("ssid:%s  passwd: %s max: %d\n", flash_ast->ssid, flash_ast->password, flash_ast->max_retry);
         
         free(flash_ast);
             }

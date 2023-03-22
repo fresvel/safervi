@@ -76,6 +76,115 @@ void print_all_netif_ips(const char *prefix)
 
 
 
+esp_err_t network_set_flash_default(){
+
+
+    flash_net_ena_t flash_net_ena={
+        .eth =true,
+        .sta =false,
+        .ap =true,
+    };
+
+    size_t req_size = sizeof(flash_net_ena_t);
+    printf("req_size = %d\n", req_size);
+
+    ESP_LOGW(TAG, "Escritura de enable: %s",esp_err_to_name(flash__network_write_label(&flash_net_ena, "ena", req_size)));
+
+
+
+        flash_sta_t flash_sta={
+            .ssid=CONFIG_STA_WIFI_SSID,      
+            .password=CONFIG_STA_WIFI_PASSWORD,
+            .channel=1,
+            .dhcp=NET_DHCP_CLIENT,
+            .ip_info.ip={192,168,0,7},
+            .ip_info.netmask={255,255,255,0},
+            .ip_info.gw={192,168,0,1},
+            .dns[0]={192,168,0,1},
+            .dns[1]={0,0,0,0},
+            .dns[2]={0,0,0,0},
+            .ip6_addr.addr={0XFE800000,0X0, 0x0, 0x7},
+            .ip6_addr.zone=0,//verificar si es necesario
+            .ip6_type=ESP_IP6_ADDR_IS_LINK_LOCAL,
+            .dns6[0].addr={0X0,0X0, 0x0, 0x0},
+            .dns6[1].addr={0X0,0X0, 0x0, 0x0},
+            .dns6[2].addr={0X0,0X0, 0x0, 0x0},
+            .max_retry=10,
+        };
+
+    req_size = sizeof(flash_sta_t);
+
+    printf("req_size = %d\n", req_size);
+    
+    ESP_LOGW(TAG, "Escritura de STA: %s", esp_err_to_name(flash__network_write_label(&flash_sta, "sta", req_size)));
+
+        flash_ap_t flash_ap={
+            .ssid=CONFIG_AP_WIFI_SSID,      
+            .password=CONFIG_AP_WIFI_PASSWORD,
+            .channel=CONFIG_AP_WIFI_CHANNEL,
+            .ip_info.ip={192,168,2,7},
+            .ip_info.netmask={255,255,255,0},
+            .ip_info.gw={192,168,2,1},
+            .dns={192,168,2,1},
+            .ip6_addr.addr={0XFE800000,0X2, 0x0, 0x7},
+            .ip6_addr.zone=1,//verificar si es necesario
+            .ip6_type=ESP_IP6_ADDR_IS_LINK_LOCAL,
+            .dns6.addr={0X0,0X0, 0x0, 0x0},
+            .max_sta=10,
+            .auth_mode=AP_WIFI_AUTH_MODE,
+        };
+
+    
+    req_size = sizeof(flash_ap_t);
+    printf("req_size = %d\n", req_size);
+    
+    ESP_LOGW(TAG, "Escritura de STA: %s", esp_err_to_name(flash__network_write_label(&flash_ap, "ap", req_size)));
+    
+
+
+        flash_eth_t flash_eth={
+            .ip_info.ip={192,168,1,7},
+            .ip_info.netmask={255,255,255,0},
+            .ip_info.gw={192,168,1,1},
+            .dns[0]={192,168,1,1},
+            .dns[1]={0,0,0,0},
+            .dns[2]={0,0,0,0},
+            .dhcp=NET_DHCP_CLIENT,
+            .ip6_addr.addr={0XFE800000,0X1, 0x0, 0x7},
+            .ip6_addr.zone=1,//verificar si es necesario
+            .ip6_type=ESP_IP6_ADDR_IS_LINK_LOCAL,
+            .dns6[0].addr={0X0,0X0, 0x0, 0x0},
+            .dns6[1].addr={0X0,0X0, 0x0, 0x0},
+            .dns6[2].addr={0X0,0X0, 0x0, 0x0},
+        };
+
+    
+    req_size = sizeof(flash_eth_t);
+    printf("req_size = %d\n", req_size);
+    
+    ESP_LOGW(TAG, "Escritura de STA: %s", esp_err_to_name(flash__network_write_label(&flash_eth, "eth", req_size)));
+    
+
+
+        flash_ast_t flash_ast={
+            .ssid="",
+            .password="",
+            .max_retry=0,
+        };
+    req_size =sizeof(flash_ast_t);
+    printf("req_size = %d\n", req_size);
+
+    ESP_LOGW(TAG, "Escritura de AST: %s", esp_err_to_name(flash__network_write_label(&flash_ast, "ast", req_size)));
+
+
+
+
+        return ESP_OK;
+
+}
+
+
+
 
 
 
@@ -97,13 +206,11 @@ esp_err_t network_connect(void)
     }else if(ret == ESP_ERR_NVS_NOT_FOUND){
         printf("EJECUTAR ESCRITURA DE MEMORIA Y CONFIGURAR DEFAULT\n");
 
+        network_set_flash_default();
         //Crear función write default
         //Validar la posibilidad de enviar una estructura por defecto
-        net_ena->eth =true;
-        net_ena->sta =true;
-        net_ena->ap =true;
-        ESP_LOGE(TAG, "Estado de write %s",esp_err_to_name(flash__network_write_label(net_ena, "ena", req_size)));
-        //free(flash_sta);  
+
+        //free(net_ena);  
     }else {
         free(net_ena);
         return ret;
