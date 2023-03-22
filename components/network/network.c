@@ -216,15 +216,23 @@ esp_err_t network_connect(void)
 
 
 
+
+
+
+
 #if CONFIG_ETH_ENABLE
 
 
+xTaskCreate(ethernet_init,"Ethernet",2048,NULL,10,NULL);
 
+/*
     if (ethernet_init() != ESP_OK) {
         ESP_LOGE(TAG, "No se puede establecer conexión Ethernet");
         return ESP_FAIL;
     }
     ESP_ERROR_CHECK(esp_register_shutdown_handler(&ethernet_shutdown));
+
+*/
 #endif// CREAR UNA TAREA ETHERNET
 
 

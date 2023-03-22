@@ -42,7 +42,7 @@ bool is_our_netif(const char *prefix, esp_netif_t *netif);
 void print_all_netif_ips(const char *prefix);
 void wifi_shutdown_driver();
 void ethernet_shutdown(void);
-esp_err_t ethernet_init(void);
+void ethernet_init(void);
 esp_err_t wifi_driver_init(wifi_mode_t mode);
 
 #ifdef __cplusplus

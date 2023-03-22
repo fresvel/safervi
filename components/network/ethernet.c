@@ -231,17 +231,23 @@ void ethernet_shutdown(void)
 }
 
 
-esp_err_t ethernet_init(void)
+void ethernet_init(void)
 {
     s_semph_get_ip_addrs = xSemaphoreCreateBinary();
     if (s_semph_get_ip_addrs == NULL) {
-        return ESP_ERR_NO_MEM;
+
+        ESP_LOGI(TAG, "ESP_ERR_NO_MEM");
+        vTaskDelete(NULL);
+        //return ESP_ERR_NO_MEM;
+        //Eliminar semaforo como en ipv6
     }
 #if CONFIG_EXAMPLE_CONNECT_IPV6
     s_semph_get_ip6_addrs = xSemaphoreCreateBinary();
     if (s_semph_get_ip6_addrs == NULL) {
         vSemaphoreDelete(s_semph_get_ip_addrs);
-        return ESP_ERR_NO_MEM;
+        ESP_LOGI(TAG, "ESP_ERR_NO_MEM");
+        vTaskDelete(NULL);
+        //return ESP_ERR_NO_MEM;
     }
 #endif
 
@@ -251,5 +257,9 @@ esp_err_t ethernet_init(void)
 #if CONFIG_EXAMPLE_CONNECT_IPV6
     xSemaphoreTake(s_semph_get_ip6_addrs, portMAX_DELAY);
 #endif
-    return ESP_OK;
+    //reducir valores de los semáforos y validar valores de retorno
+    //aquí se puede configurar direcciones estáticas
+    print_all_netif_ips(ETH_NETIF_DESC);
+    vTaskDelete(NULL);
+    //return ESP_OK;
 }
