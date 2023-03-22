@@ -45,7 +45,7 @@ void print_all_netif_ips(const char *prefix);
 void wifi_shutdown_driver();
 void ethernet_shutdown(void);
 void eth_start(flash_eth_t *flash_eth);
-esp_err_t wifi_driver_init(wifi_mode_t mode);
+void wifi_driver_init(flash_wifi_t* flash_wifi);
 
 #ifdef __cplusplus
 }

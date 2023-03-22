@@ -63,6 +63,13 @@ typedef struct{
     bool ast;
 }flash_net_ena_t;
 
+typedef struct{
+    flash_ap_t ap;
+    flash_sta_t sta;
+    wifi_mode_t mode;
+}flash_wifi_t;
+
+
 //Evaluar la posibilidad de usar o no, se crea un acceso global a las variables por defecto
 typedef struct{
     flash_net_ena_t ena;

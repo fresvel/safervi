@@ -231,32 +231,48 @@ esp_err_t network_connect(void)
 #endif// CREAR UNA TAREA ETHERNET
 
 
-#if CONFIG_STA_ENABLE || CONFIG_AP_ENABLE 
-
-uint8_t wifi_ena=net_ena->ap*1+net_ena->sta*2;
 
 
-switch(wifi_ena){
-    case 1:
+    //uint8_t wifi_ena=net_ena->ap*1+net_ena->sta*2;
+    uint8_t wifi_ena=3;
+    printf("wifi_ena%d\n", wifi_ena);
 
-    break;
-    case 2:
-    break;
-    case 3:
-    break;
-}
+    flash_wifi_t *flash_wifi;
+    flash_wifi=malloc(sizeof(flash_wifi_t));
+    if(flash_wifi==NULL) return ESP_ERR_NVS_NOT_ENOUGH_SPACE;
 
-
-
-
-    if (wifi_driver_init(WIFI_MODE_APSTA) != ESP_OK) {
-        ESP_LOGE(TAG, "Error en la configuración WiFi");
-        return ESP_FAIL;
+    if(net_ena->ap){
+        req_size=sizeof(flash_ap_t);
+        ESP_ERROR_CHECK(flash__network_get_label(&flash_wifi->ap, "ap", req_size));        
     }
-#endif
-#if CONFIG_STA_ENABLE
-    //ESP_ERROR_CHECK(esp_register_shutdown_handler(&wifi_shutdown_sta));
-#endif
+
+    if(net_ena->sta){
+        req_size=sizeof(flash_sta_t);
+        ESP_ERROR_CHECK(flash__network_get_label(&flash_wifi->sta, "sta", req_size));
+    }
+
+
+
+    //REEMPLAZAR POR UN VECTOR wifi_mode_t[4]
+    switch(wifi_ena){
+        case 0:
+        flash_wifi->mode=WIFI_MODE_NULL;
+        break;
+        case 1:
+        flash_wifi->mode=WIFI_MODE_AP;
+        break;
+        case 2:
+        flash_wifi->mode=WIFI_MODE_STA;
+        break;
+        case 3:
+        flash_wifi->mode=WIFI_MODE_APSTA;
+        break;
+        default:
+        break;
+    }
+
+    ESP_LOGI(TAG, "Iniciando wifi mode");
+    xTaskCreate(wifi_driver_init, "Wifi", 4096, flash_wifi,10,NULL);
 
 
 #if CONFIG_ETH_ENABLE

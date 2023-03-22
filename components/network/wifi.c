@@ -255,20 +255,19 @@ void wifi_stop_ap(void){
 #endif
 
 
-esp_err_t wifi_driver_init(wifi_mode_t mode){
+void wifi_driver_init(flash_wifi_t* flash_wifi){
 
     wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
     ESP_ERROR_CHECK(esp_wifi_init(&cfg));
-    ESP_ERROR_CHECK(esp_wifi_set_mode(mode));
+    ESP_ERROR_CHECK(esp_wifi_set_mode(flash_wifi->mode));
     wifi_config_t ap_config = {};
     wifi_config_t sta_config = {};
     ESP_LOGI(TAG, "Iniciando driver de Wifi");
 
     /*AP*/
     #if CONFIG_AP_ENABLE
-    if(mode == WIFI_MODE_AP||mode == WIFI_MODE_APSTA){
-        ESP_LOGI(TAG, "Configuración de Punto de Acceso");
-        
+    if(flash_wifi->mode == WIFI_MODE_AP||flash_wifi->mode == WIFI_MODE_APSTA){
+        ESP_LOGI(TAG, "Configuración de Punto de Acceso");        
         esp_netif_inherent_config_t ap_netif_config = ESP_NETIF_INHERENT_DEFAULT_WIFI_AP();
         ap_netif_config.if_desc = AP_NETIF_DESC;
         ap_netif_config.route_prio = 128;
@@ -300,7 +299,7 @@ esp_err_t wifi_driver_init(wifi_mode_t mode){
     
     /*STA*/
     #if CONFIG_STA_ENABLE
-    if(mode == WIFI_MODE_STA||mode == WIFI_MODE_APSTA){
+    if(flash_wifi->mode == WIFI_MODE_STA||flash_wifi->mode == WIFI_MODE_APSTA){
         esp_netif_inherent_config_t sta_netif_config = ESP_NETIF_INHERENT_DEFAULT_WIFI_STA();
         sta_netif_config.if_desc = STA_NETIF_DESC;
         sta_netif_config.route_prio = 128;
@@ -315,7 +314,7 @@ esp_err_t wifi_driver_init(wifi_mode_t mode){
     
     /*AP*/
     #if CONFIG_AP_ENABLE
-    if(mode == WIFI_MODE_AP||mode == WIFI_MODE_APSTA)
+    if(flash_wifi->mode == WIFI_MODE_AP||flash_wifi->mode == WIFI_MODE_APSTA)
     ESP_LOGI(TAG, "Punto de acceso configurado. SSID:%s password:%s channel:%d ",
              CONFIG_AP_WIFI_SSID, CONFIG_AP_WIFI_PASSWORD, CONFIG_AP_WIFI_CHANNEL);
     #endif
@@ -323,7 +322,7 @@ esp_err_t wifi_driver_init(wifi_mode_t mode){
 
     /*STA*/
     #if CONFIG_STA_ENABLE
-    if(mode == WIFI_MODE_STA||mode == WIFI_MODE_APSTA){
+    if(flash_wifi->mode == WIFI_MODE_STA||flash_wifi->mode == WIFI_MODE_APSTA){
         strcpy((char*)sta_config.sta.ssid, CONFIG_STA_WIFI_SSID);
         strcpy((char*)sta_config.sta.password, CONFIG_STA_WIFI_PASSWORD);
         sta_config.sta.scan_method = STA_WIFI_SCAN_METHOD;
@@ -331,11 +330,13 @@ esp_err_t wifi_driver_init(wifi_mode_t mode){
         sta_config.sta.threshold.rssi = CONFIG_STA_WIFI_SCAN_RSSI_THRESHOLD;
         sta_config.sta.threshold.authmode = STA_WIFI_SCAN_AUTH_MODE_THRESHOLD;
         ESP_LOGW(TAG, "Estableciendo conexión de estación");
-        return wifi_connect_sta(sta_config, true);
+        ESP_LOGI(TAG, "Configuración de la estación: %s", esp_err_to_name(wifi_connect_sta(sta_config, true))); 
     }
     #endif
     /*STA*/
-    return ESP_OK; //Retorno de AP   
+
+    vTaskDelete(NULL);
+   
 }
 
 
