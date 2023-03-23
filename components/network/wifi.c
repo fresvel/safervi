@@ -60,7 +60,7 @@ static SemaphoreHandle_t s_semph_get_ip6_addrs = NULL;
 #endif
 
 static uint8_t s_retry_num = 0;
-static int8_t s_retry_max = 0;
+static uint8_t s_retry_max = 0;
 
 static void sta_handler_disconnect(void *arg, esp_event_base_t event_base,
                                int32_t event_id, void *event_data){
@@ -309,7 +309,7 @@ void wifi_driver_init(flash_wifi_t* flash_wifi){
     }
     #endif
     /*STA*/
-    free(flash_wifi);
+    //free(flash_wifi);
     vTaskDelete(NULL);
    
 }

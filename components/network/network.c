@@ -110,7 +110,7 @@ esp_err_t network_set_flash_default(){
             .dns6[0].addr={0X0,0X0, 0x0, 0x0},
             .dns6[1].addr={0X0,0X0, 0x0, 0x0},
             .dns6[2].addr={0X0,0X0, 0x0, 0x0},
-            .max_retry=-1,
+            .max_retry=7,
         };
 
     req_size = sizeof(flash_sta_t);

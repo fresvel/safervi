@@ -4,7 +4,7 @@
 #include <nvs.h>
 #include <nvs_flash.h>
 #include <string.h>
-#include <esp_log.h>
+
 
 typedef enum {
     NET_DHCP_NULL=0,
@@ -22,7 +22,7 @@ typedef struct{
     esp_ip6_addr_t ip6_addr; //por usar
     esp_ip6_addr_type_t ip6_type; //por usar
     esp_ip6_addr_t dns6[3]; //por usar
-    int8_t max_retry; //por usar           
+    uint8_t max_retry; //por usar           
 } flash_sta_t;
 
 
@@ -36,7 +36,7 @@ typedef struct{
     esp_ip6_addr_type_t ip6_type;
     esp_ip6_addr_t dns6;
     wifi_auth_mode_t auth_mode;
-    int8_t max_sta;
+    uint8_t max_sta;
 } flash_ap_t;
 
 
