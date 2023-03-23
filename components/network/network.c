@@ -110,7 +110,7 @@ esp_err_t network_set_flash_default(){
             .dns6[0].addr={0X0,0X0, 0x0, 0x0},
             .dns6[1].addr={0X0,0X0, 0x0, 0x0},
             .dns6[2].addr={0X0,0X0, 0x0, 0x0},
-            .max_retry=7,
+            .max_retry=70,
         };
 
     req_size = sizeof(flash_sta_t);
@@ -212,11 +212,7 @@ esp_err_t network_connect(void)
         return ret;
     }
     ESP_LOGI(TAG, "Estado de Enable %s",esp_err_to_name(ret));
-    free(net_ena);
-
-
-
-
+    
 
 
 
@@ -241,20 +237,33 @@ esp_err_t network_connect(void)
     flash_wifi=malloc(sizeof(flash_wifi_t));
     if(flash_wifi==NULL) return ESP_ERR_NVS_NOT_ENOUGH_SPACE;
 
-    if(net_ena->ap){
+    if(net_ena->ap==1){
         wifi_ena=1;
+        printf("wifi_ena  AP %d\n",wifi_ena);
         req_size=sizeof(flash_ap_t);
         ESP_ERROR_CHECK(flash__network_get_label(&flash_wifi->ap, "ap", req_size));        
     }
 
-    if(net_ena->sta){
+    if(net_ena->sta==1){
         wifi_ena=wifi_ena+2;
+        printf("wifi_ena STA %d\n",wifi_ena);
         req_size=sizeof(flash_sta_t);
         ESP_ERROR_CHECK(flash__network_get_label(&flash_wifi->sta, "sta", req_size));
     }
+    flash_wifi->mode=wifi_ena;
+    free(net_ena);
 
-    printf("wifi_ena: %d\n",wifi_ena);
+    ESP_LOGI(TAG, "Iniciando wifi mode");
+    xTaskCreate(wifi_driver_init, "Wifi", 4096, flash_wifi,10,NULL);
 
+    printf("wifi_ena: %d\n",WIFI_MODE_APSTA);//3
+    printf("wifi_ena: %d\n",WIFI_MODE_STA);//2
+    printf("wifi_ena: %d\n",WIFI_MODE_AP);//1
+    printf("wifi_ena: %d\n",WIFI_MODE_MAX);//4
+    printf("wifi_ena: %d\n",WIFI_MODE_NULL);//0
+    return ESP_OK;
+
+/*
     switch(wifi_ena){
         case 3:
         flash_wifi->mode=WIFI_MODE_APSTA;
@@ -271,12 +280,10 @@ esp_err_t network_connect(void)
         default:
         break;
     }
+*/
+    
 
 
-    ESP_LOGI(TAG, "Iniciando wifi mode");
-    xTaskCreate(wifi_driver_init, "Wifi", 4096, flash_wifi,10,NULL);
-
-    return ESP_OK;
 }
 
 

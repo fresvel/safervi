@@ -65,11 +65,18 @@ static uint8_t s_retry_max = 0;
 static void sta_handler_disconnect(void *arg, esp_event_base_t event_base,
                                int32_t event_id, void *event_data){
     s_retry_num++;
+        
+    
+    
+
     if (s_retry_num > s_retry_max) {
         ESP_LOGE(TAG, "Falló la conexión Wifi %d intentos", s_retry_num);
+        s_retry_num=0;
+        vTaskDelay(70000/portTICK_PERIOD_MS);
         return;
     }
     ESP_LOGW(TAG, "Wi-Fi desconectado, intentando reconctar... %d intentos",s_retry_num);
+    vTaskDelay(2000/portTICK_PERIOD_MS);
     esp_err_t err = esp_wifi_connect();
     if (err == ESP_ERR_WIFI_NOT_STARTED) {
         return;
@@ -287,13 +294,13 @@ void wifi_driver_init(flash_wifi_t* flash_wifi){
 
     ESP_ERROR_CHECK(esp_wifi_start());
     
-    /*AP
+    /*AP*/
     #if CONFIG_AP_ENABLE
     if(flash_wifi->mode == WIFI_MODE_AP||flash_wifi->mode == WIFI_MODE_APSTA)
-    ESP_LOGI(TAG, "Punto de acceso configurado. SSID:%s password:%s channel:%d ",
+    ESP_LOGW(TAG, "Punto de acceso configurado. SSID:%s password:%s channel:%d ",
              CONFIG_AP_WIFI_SSID, CONFIG_AP_WIFI_PASSWORD, CONFIG_AP_WIFI_CHANNEL);
     #endif
-    AP*/
+    /*AP*/
 
     /*STA*/
     #if CONFIG_STA_ENABLE
