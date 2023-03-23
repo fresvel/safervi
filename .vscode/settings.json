@@ -18,7 +18,8 @@
         "*.inc": "cpp",
         "event_groups.h": "c",
         "esp_netif.h": "c",
-        "netfwd": "cpp"
+        "netfwd": "cpp",
+        "freertos.h": "c"
     },
     "idf.flashType": "UART",
     "idf.port": "/dev/ttyUSB0"

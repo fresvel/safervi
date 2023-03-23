@@ -12,7 +12,7 @@
 #if CONFIG_ETH_USE_SPI_ETHERNET
 #include "driver/spi_master.h"
 #endif // CONFIG_ETH_USE_SPI_ETHERNET
-#include "esp_log.h"
+
 #include "driver/gpio.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
@@ -186,10 +186,9 @@ void eth_start(flash_eth_t *flash_eth)
     }else{
         ESP_LOGE(TAG, "Error en configuración Ethernet %s", esp_err_to_name(ret));
     }
+    free(flash_eth);
     vTaskDelete(NULL);
 }
-
-
 
 
 

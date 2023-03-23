@@ -52,6 +52,7 @@ esp_netif_t *get_netif_from_desc(const char *desc)
 
 void print_all_netif_ips(const char *prefix)
 {
+    ESP_LOGW(TAG, "***************************+++");
     // iterate over active interfaces, and print out IPs of "our" netifs
     esp_netif_t *netif = NULL;
     esp_netif_ip_info_t ip;
@@ -109,7 +110,7 @@ esp_err_t network_set_flash_default(){
             .dns6[0].addr={0X0,0X0, 0x0, 0x0},
             .dns6[1].addr={0X0,0X0, 0x0, 0x0},
             .dns6[2].addr={0X0,0X0, 0x0, 0x0},
-            .max_retry=10,
+            .max_retry=-1,
         };
 
     req_size = sizeof(flash_sta_t);
@@ -234,59 +235,46 @@ esp_err_t network_connect(void)
 
 
     //uint8_t wifi_ena=net_ena->ap*1+net_ena->sta*2;
-    uint8_t wifi_ena=3;
-    printf("wifi_ena%d\n", wifi_ena);
-
+    uint8_t wifi_ena=0;
+    
     flash_wifi_t *flash_wifi;
     flash_wifi=malloc(sizeof(flash_wifi_t));
     if(flash_wifi==NULL) return ESP_ERR_NVS_NOT_ENOUGH_SPACE;
 
     if(net_ena->ap){
+        wifi_ena=1;
         req_size=sizeof(flash_ap_t);
         ESP_ERROR_CHECK(flash__network_get_label(&flash_wifi->ap, "ap", req_size));        
     }
 
     if(net_ena->sta){
+        wifi_ena=wifi_ena+2;
         req_size=sizeof(flash_sta_t);
         ESP_ERROR_CHECK(flash__network_get_label(&flash_wifi->sta, "sta", req_size));
     }
 
+    printf("wifi_ena: %d\n",wifi_ena);
 
-
-    //REEMPLAZAR POR UN VECTOR wifi_mode_t[4]
     switch(wifi_ena){
-        case 0:
-        flash_wifi->mode=WIFI_MODE_NULL;
-        break;
-        case 1:
-        flash_wifi->mode=WIFI_MODE_AP;
+        case 3:
+        flash_wifi->mode=WIFI_MODE_APSTA;
         break;
         case 2:
         flash_wifi->mode=WIFI_MODE_STA;
         break;
-        case 3:
-        flash_wifi->mode=WIFI_MODE_APSTA;
+        case 1:
+        flash_wifi->mode=WIFI_MODE_AP;
+        break;
+        case 0:
+        flash_wifi->mode=WIFI_MODE_NULL;
         break;
         default:
         break;
     }
 
+
     ESP_LOGI(TAG, "Iniciando wifi mode");
     xTaskCreate(wifi_driver_init, "Wifi", 4096, flash_wifi,10,NULL);
-
-
-#if CONFIG_ETH_ENABLE
-    print_all_netif_ips(ETH_NETIF_DESC);
-#endif
-
-
-#if CONFIG_STA_ENABLE
-    print_all_netif_ips(STA_NETIF_DESC);
-#endif
-
-#if CONFIG_AP_ENABLE
-    print_all_netif_ips(AP_NETIF_DESC);
-#endif
 
     return ESP_OK;
 }

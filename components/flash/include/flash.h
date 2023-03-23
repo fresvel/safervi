@@ -4,24 +4,25 @@
 #include <nvs.h>
 #include <nvs_flash.h>
 #include <string.h>
+#include <esp_log.h>
 
-typedef uint8_t dhcp_type_t;
-
-#define NET_DHCP_NULL (0)
-#define NET_DHCP_CLIENT (1)
-#define NET_DHCP_SERVER (2)
+typedef enum {
+    NET_DHCP_NULL=0,
+    NET_DHCP_CLIENT,
+    NET_DHCP_SERVER
+}dhcp_type_t;
 
 typedef struct{
-    uint8_t ssid[32];      
-    uint8_t password[64];  
-    uint8_t channel;
-    dhcp_type_t dhcp;    
-    esp_netif_ip_info_t ip_info;
-    esp_ip4_addr_t dns[3];
-    esp_ip6_addr_t ip6_addr;
-    esp_ip6_addr_type_t ip6_type;
-    esp_ip6_addr_t dns6[3];
-    uint8_t max_retry;           
+    uint8_t ssid[32]; //ok     
+    uint8_t password[64];//ok 
+    uint8_t channel; //no usado
+    dhcp_type_t dhcp;//por usar   
+    esp_netif_ip_info_t ip_info; //por usar
+    esp_ip4_addr_t dns[3]; //por usar
+    esp_ip6_addr_t ip6_addr; //por usar
+    esp_ip6_addr_type_t ip6_type; //por usar
+    esp_ip6_addr_t dns6[3]; //por usar
+    int8_t max_retry; //por usar           
 } flash_sta_t;
 
 
@@ -35,7 +36,7 @@ typedef struct{
     esp_ip6_addr_type_t ip6_type;
     esp_ip6_addr_t dns6;
     wifi_auth_mode_t auth_mode;
-    uint8_t max_sta;
+    int8_t max_sta;
 } flash_ap_t;
 
 

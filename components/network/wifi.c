@@ -1,7 +1,7 @@
 #include <string.h>
 #include "network.h"
 #include "private_network.h"
-#include "esp_log.h"
+
 
 #include <string.h>
 #include "freertos/FreeRTOS.h"
@@ -59,24 +59,17 @@ static SemaphoreHandle_t s_semph_get_ip6_addrs = NULL;
 #define STA_WIFI_SCAN_AUTH_MODE_THRESHOLD WIFI_AUTH_WAPI_PSK
 #endif
 
-static int s_retry_num = 0;
+static uint8_t s_retry_num = 0;
+static int8_t s_retry_max = 0;
 
 static void sta_handler_disconnect(void *arg, esp_event_base_t event_base,
                                int32_t event_id, void *event_data){
     s_retry_num++;
-    if (s_retry_num > CONFIG_STA_WIFI_CONN_MAX_RETRY) {
+    if (s_retry_num > s_retry_max) {
         ESP_LOGE(TAG, "Falló la conexión Wifi %d intentos", s_retry_num);
-        if (s_semph_get_ip_addrs) {
-            xSemaphoreGive(s_semph_get_ip_addrs);
-        }
-#if CONFIG_STA_CONNECT_IPV6
-        if (s_semph_get_ip6_addrs) {
-            xSemaphoreGive(s_semph_get_ip6_addrs);
-        }
-#endif
         return;
     }
-    ESP_LOGW(TAG, "Wi-Fi desconectado, intentando reconctar...");
+    ESP_LOGW(TAG, "Wi-Fi desconectado, intentando reconctar... %d intentos",s_retry_num);
     esp_err_t err = esp_wifi_connect();
     if (err == ESP_ERR_WIFI_NOT_STARTED) {
         return;
@@ -136,22 +129,13 @@ static void sta_handler_got_ipv6(void *arg, esp_event_base_t event_base,
 
 
 
-esp_err_t wifi_connect_sta(wifi_config_t wifi_config, bool wait)
+esp_err_t wifi_connect_sta(wifi_config_t wifi_config, int8_t wait)
 {
-    if (wait) {
-        s_semph_get_ip_addrs = xSemaphoreCreateBinary();
-        if (s_semph_get_ip_addrs == NULL) {
-            return ESP_ERR_NO_MEM;
-        }
-#if CONFIG_STA_CONNECT_IPV6
-        s_semph_get_ip6_addrs = xSemaphoreCreateBinary();
-        if (s_semph_get_ip6_addrs == NULL) {
-            vSemaphoreDelete(s_semph_get_ip_addrs);
-            return ESP_ERR_NO_MEM;
-        }
-#endif
-    }
+
+
+    printf("wait %d\n", wait);
     s_retry_num = 0;
+    s_retry_max=wait;
     ESP_ERROR_CHECK(esp_event_handler_register(WIFI_EVENT, WIFI_EVENT_STA_DISCONNECTED, &sta_handler_disconnect, NULL));
     ESP_ERROR_CHECK(esp_event_handler_register(IP_EVENT, IP_EVENT_STA_GOT_IP, &sta_handler_got_ip, NULL));
     ESP_ERROR_CHECK(esp_event_handler_register(WIFI_EVENT, WIFI_EVENT_STA_CONNECTED, &sta_handler_connect, s_sta_netif));
@@ -167,18 +151,11 @@ esp_err_t wifi_connect_sta(wifi_config_t wifi_config, bool wait)
         return ret;
     }
     
-    if (wait) {
-        ESP_LOGI(TAG, "Waiting for IP(s)");
-        xSemaphoreTake(s_semph_get_ip_addrs, portMAX_DELAY);
-        ESP_LOGE(TAG, "Dirección Obtenida");
-#if CONFIG_STA_CONNECT_IPV6
-        xSemaphoreTake(s_semph_get_ip6_addrs, portMAX_DELAY);
-#endif
-        if (s_retry_num > CONFIG_STA_WIFI_CONN_MAX_RETRY) {
+    if (s_retry_num > wait) {
             ESP_LOGW(TAG, "La tarjeta no pudo establecer conexión con el Punto de Acceso");
             return ESP_OK;
-        }
     }
+    
     return ESP_OK;
 }
 
@@ -269,27 +246,25 @@ void wifi_driver_init(flash_wifi_t* flash_wifi){
     if(flash_wifi->mode == WIFI_MODE_AP||flash_wifi->mode == WIFI_MODE_APSTA){
         ESP_LOGI(TAG, "Configuración de Punto de Acceso");        
         esp_netif_inherent_config_t ap_netif_config = ESP_NETIF_INHERENT_DEFAULT_WIFI_AP();
+        //Aqui configurar la IPv4 address
         ap_netif_config.if_desc = AP_NETIF_DESC;
         ap_netif_config.route_prio = 128;
         s_ap_netif = esp_netif_create_wifi(WIFI_IF_AP, &ap_netif_config);
-
+        
         ESP_ERROR_CHECK(esp_event_handler_instance_register(WIFI_EVENT, ESP_EVENT_ANY_ID, &wifi_event_handler,NULL,NULL));/*aquí*/
+        //ESP_ERROR_CHECK(esp_netif_create_ip6_linklocal(s_ap_netif));
+        
+        printf("%s", flash_wifi->ap.ssid);
         
 
-
-
-
-
-
-
-        strcpy((char*)ap_config.ap.ssid, CONFIG_AP_WIFI_SSID);
-        strcpy((char*)ap_config.ap.password, CONFIG_AP_WIFI_PASSWORD);
-        ap_config.ap.ssid_len= strlen(CONFIG_AP_WIFI_SSID);
-        ap_config.ap.channel = CONFIG_AP_WIFI_CHANNEL;
-        ap_config.ap.max_connection = CONFIG_AP_MAX_STA_CONN;
+        strcpy((char*)ap_config.ap.ssid, (const char*)flash_wifi->ap.ssid);
+        strcpy((char*)ap_config.ap.password, (const char*)flash_wifi->ap.password);
+        ap_config.ap.ssid_len= strlen((const char*)flash_wifi->ap.ssid);
+        ap_config.ap.channel = flash_wifi->ap.channel;
+        ap_config.ap.max_connection = flash_wifi->ap.max_sta;
         ap_config.ap.authmode = AP_WIFI_AUTH_MODE;
         ap_config.ap.pmf_cfg.required = false;
-        if (strlen(CONFIG_AP_WIFI_PASSWORD) == 0) {
+        if (strlen((const char*)flash_wifi->ap.password) == 0) {
         ap_config.ap.authmode = WIFI_AUTH_OPEN;
         }
         ESP_ERROR_CHECK(esp_wifi_set_config(WIFI_IF_AP, &ap_config));
@@ -312,29 +287,29 @@ void wifi_driver_init(flash_wifi_t* flash_wifi){
 
     ESP_ERROR_CHECK(esp_wifi_start());
     
-    /*AP*/
+    /*AP
     #if CONFIG_AP_ENABLE
     if(flash_wifi->mode == WIFI_MODE_AP||flash_wifi->mode == WIFI_MODE_APSTA)
     ESP_LOGI(TAG, "Punto de acceso configurado. SSID:%s password:%s channel:%d ",
              CONFIG_AP_WIFI_SSID, CONFIG_AP_WIFI_PASSWORD, CONFIG_AP_WIFI_CHANNEL);
     #endif
-    /*AP*/
+    AP*/
 
     /*STA*/
     #if CONFIG_STA_ENABLE
     if(flash_wifi->mode == WIFI_MODE_STA||flash_wifi->mode == WIFI_MODE_APSTA){
-        strcpy((char*)sta_config.sta.ssid, CONFIG_STA_WIFI_SSID);
-        strcpy((char*)sta_config.sta.password, CONFIG_STA_WIFI_PASSWORD);
+        strcpy((char*)sta_config.sta.ssid, (const char*)flash_wifi->sta.ssid);
+        strcpy((char*)sta_config.sta.password, (const char*)flash_wifi->sta.password);
         sta_config.sta.scan_method = STA_WIFI_SCAN_METHOD;
         sta_config.sta.sort_method = STA_WIFI_CONNECT_AP_SORT_METHOD;
         sta_config.sta.threshold.rssi = CONFIG_STA_WIFI_SCAN_RSSI_THRESHOLD;
         sta_config.sta.threshold.authmode = STA_WIFI_SCAN_AUTH_MODE_THRESHOLD;
         ESP_LOGW(TAG, "Estableciendo conexión de estación");
-        ESP_LOGI(TAG, "Configuración de la estación: %s", esp_err_to_name(wifi_connect_sta(sta_config, true))); 
+        ESP_LOGI(TAG, "Configuración de la estación: %s", esp_err_to_name(wifi_connect_sta(sta_config, flash_wifi->sta.max_retry))); 
     }
     #endif
     /*STA*/
-
+    free(flash_wifi);
     vTaskDelete(NULL);
    
 }

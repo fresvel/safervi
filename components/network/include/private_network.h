@@ -38,7 +38,7 @@ extern const char *example_ipv6_addr_types_to_str[6];
 #endif
 
 void wifi_stop_sta(void);
-esp_err_t wifi_connect_sta(wifi_config_t wifi_config, bool wait);
+esp_err_t wifi_connect_sta(wifi_config_t wifi_config, int8_t wait);
 esp_err_t wifi_disconnect_sta(void);
 bool is_our_netif(const char *prefix, esp_netif_t *netif);
 void print_all_netif_ips(const char *prefix);
