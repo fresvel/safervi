@@ -27,21 +27,21 @@ typedef struct{
 
 
 typedef struct{
-    uint8_t ssid[32];      
-    uint8_t password[64];  
-    uint8_t channel;
-    esp_netif_ip_info_t ip_info;
-    esp_ip4_addr_t dns;
-    esp_ip6_addr_t ip6_addr;
-    esp_ip6_addr_type_t ip6_type;
-    esp_ip6_addr_t dns6;
-    wifi_auth_mode_t auth_mode;
-    uint8_t max_sta;
+    uint8_t ssid[32]; //ok   
+    uint8_t password[64];//ok 
+    uint8_t channel; //ok
+    esp_netif_ip_info_t ip_info; //por usar
+    esp_ip4_addr_t dns; //por usar
+    esp_ip6_addr_t ip6_addr; //por usar
+    esp_ip6_addr_type_t ip6_type; //por usar
+    esp_ip6_addr_t dns6; //por usar
+    wifi_auth_mode_t auth_mode; //Revisar
+    uint8_t max_sta; //Revisar
 } flash_ap_t;
 
 
 
-typedef struct{
+typedef struct{ //por usar
     esp_netif_ip_info_t ip_info;
     esp_ip4_addr_t dns[3];
     dhcp_type_t dhcp;
@@ -50,7 +50,7 @@ typedef struct{
     esp_ip6_addr_t dns6[3];
 } flash_eth_t;
 
-typedef struct{
+typedef struct{ //Por usar estaciones alternative
     uint8_t ssid[32];      
     uint8_t password[64];  
     uint8_t max_retry;           
@@ -71,15 +71,7 @@ typedef struct{
 }flash_wifi_t;
 
 
-//Evaluar la posibilidad de usar o no, se crea un acceso global a las variables por defecto
-typedef struct{
-    flash_net_ena_t ena;
-    flash_sta_t sta;
-    flash_eth_t eth;
-    flash_ap_t ap;
-    flash_ast_t ast;
-}flash_net_def_t;
-
+//Sección de Protocolos
 
 typedef struct{
     bool mqtt;
@@ -87,9 +79,36 @@ typedef struct{
     bool ws_s;
 }flash_prot_ena_t;
 
+typedef struct{
+    bool cifrado; //cambiar a type deff (ninguno, servidor bidireccional)
+    char username[32];
+    char password[32];
+    uint16_t puerto;
+}flash_ws_s;
 
+typedef struct{
+    bool cifrado; //cambiar a type deff (ninguno, servidor bidireccional)
+    char username[32];
+    char password[32];
+    uint16_t puerto;
+    char url[64];
+    char client_id[32];
+}flash_ws_c;
 
+typedef struct{
+    char username[32];
+    char password[32];
+}flash_lo_s;
 
+typedef struct{
+    bool cifrado; //cambiar a type deff (ninguno, servidor bidireccional)
+    char username[32];
+    char password[32];
+    uint16_t puerto;
+    char url[64];
+    char client_id[32];
+    bool protocolo;// cambiar a type deff (mqtt ws)
+}flash_mqtt;
 
 
 

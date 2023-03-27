@@ -4,6 +4,9 @@
 #include "nvs_flash.h"
 #include "esp_log.h"
 
+#include "files.h"
+
+
 //#include "flash.h"
 
 static const char *TAG="Safervi";
@@ -13,7 +16,7 @@ void app_main(void)
 
 
 
-
+get_file("null");
 
 
     ESP_LOGI(TAG, "Iniciando programa, Leyendo Archivo");
