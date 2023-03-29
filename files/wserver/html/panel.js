@@ -17,10 +17,10 @@ btn_sys.addEventListener('click', () => {
 
     menu.innerHTML=
     `
-    <p class="menu-label">
+    <p class="menu-label is-size-5">
     System
   </p>
-  <ul class="menu-list">
+  <ul class="menu-list is-size-5">
     <li><a>Login</a></li>
     <li><a>Node</a></li>
     <li><a></a></li>
@@ -32,10 +32,10 @@ btn_dash.addEventListener('click', () => {
     //alert('Hola')
     menu.innerHTML=
     `
-    <p class="menu-label">
+    <p class="menu-label is-size-5">
     Dashboard
   </p>
-  <ul class="menu-list">
+  <ul class="menu-list is-size-5">
     <li><a>View</a></li>
     <li><a>Settings</a></li>
   </ul>
@@ -45,10 +45,10 @@ btn_dash.addEventListener('click', () => {
 btn_sens.addEventListener('click', () => {
     menu.innerHTML=
     `
-    <p class="menu-label">
+    <p class="menu-label is-size-5">
     Sensors
   </p>
-  <ul class="menu-list">
+  <ul class="menu-list is-size-5">
     <li><a>Wired</a></li>
     <li><a>Battery</a></li>
     <li><a>Wireless</a></li>
@@ -60,10 +60,10 @@ btn_prot.addEventListener('click', () => {
     //alert('Hola')
     menu.innerHTML=
     `
-    <p class="menu-label">
+    <p class="menu-label is-size-5">
     Protocols
   </p>
-  <ul class="menu-list">
+  <ul class="menu-list is-size-5">
     <li><a>MQTT</a></li>
     <li><a>Websocket Client</a></li>
     <li><a>Websocket Server</a></li>
@@ -75,10 +75,10 @@ btn_net.addEventListener('click', () => {
     //alert('Hola')
     menu.innerHTML=
     `
-    <p class="menu-label">
+    <p class="menu-label is-size-5">
     Networks
   </p>
-  <ul class="menu-list">
+  <ul class="menu-list is-size-5">
     <li><a>Ethernet</a></li>
     <li><a>Station</a></li>
     <li><a>Acces Point</a></li>
@@ -90,16 +90,7 @@ btn_net.addEventListener('click', () => {
 btn_test.addEventListener('click', ()=>{
     
     div_main.innerHTML=`
-    <h1 class="title">Ethernet Settings</h1>
-    <p class="subtitle">IPv4 Settings</p>
-    
-    <div class="columns is-fullwidth box">
-    <div class="column is-2">
-    <p class="subtitle is-4">IP address</p>
-    </div>
-    <div class="column is-3" >
-    <input class="input is-primary subtitle is-4" type="text" placeholder="IPv4 address">
-    </div>
+
 
     ip_info;
     dns[3];

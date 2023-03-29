@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Safervi</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.2/css/bulma.min.css">
+    <style>
+        .row{
+        margin-top: -32px;
+        }
+    </style>
+</head>
+<body>
+    <header >
+        <nav class="navbar is-dark">
+            <a class="button is-dark m-3" id="nav_menu">
+                <img src="logo.png" width="50" height="85">
+            </a> 
+
+            <div class="navbar-start" >
+                <a class="navbar-item" id="nav_sens">
+                    Sensors
+                </a>
+                <a class="navbar-item" id="nav_prot">
+                  Protocols
+                </a>
+          
+                <a class="navbar-item" id="nav_net">
+                  Network
+                </a>
+
+                <a class="navbar-item" id="nav_dash">
+                    Dashboard
+                </a>
+
+                <a class="navbar-item" id="nav_sys">
+                    System
+                </a>
+          
+
+            </div>
+
+        </nav>
+
+
+
+
+            
+        
+
+    </header>
+
+
+    <div class="columns m-3 is-fullwidth is-fullheight">
+        <div id="menu" class="column is-2 is-fullheight">
+            
+                <p class="menu-label">
+                    Dashboard
+                </p>
+                <ul class="menu-list">
+                    <li><a>View</a></li>
+                    <li><a>Settings</a></li>
+                </ul>
+                <button class="button is-primary" id="test">TEST</button>
+        </div>
+
+
+        
+        <div class="section column is-fullwidth" id="main">        
+            
+            <h1 class="title">Ethernet Settings</h1>
+            
+                <div class="columns">
+                    <div class="column is-half">
+                        <div class="box">
+                            <p class="title is-4">IPv4 Settings</p>
+                        <div class="columns">
+                            <div class="column is-4 notification is-size-5 is-fullwidth">
+                                    IP Address
+                            </div>
+                            <input class="column input is-info is-size-5 is-7 " type="text" placeholder="IPv4 Address">
+                          </div>
+            
+                          <div class="columns row">
+                            <div class="column is-4 notification is-size-5 is-fullwidth">
+                                    Netmask
+                            </div>
+                            <input class="column input is-info is-size-5 is-7" type="text" placeholder="IPv4 Address">
+                          </div>
+                          <div class="columns row">
+                            <div class="column is-4 notification is-size-5 is-fullwidth">
+                                    Gateway
+                            </div>
+                            <input class="column input is-info is-size-5 is-7" type="text" placeholder="IPv4 Address">
+                          </div>
+                        </div>    
+                    </div>
+
+                    <div class="column is-half"> 
+                        <div class="box">
+                            <p class="title is-4">DNS</p>
+                        <div class="columns">
+                            <div class="column is-4 notification is-size-5 is-fullwidth">
+                                    DNS Main
+                            </div>
+                            <input class="column input is-info is-size-5 is-7 " type="text" placeholder="IPv4 Address">
+                          </div>
+            
+                          <div class="columns row">
+                            <div class="column is-4 notification is-size-5 is-fullwidth">
+                                    DNS Backup
+                            </div>
+                            <input class="column input is-info is-size-5 is-7" type="text" placeholder="IPv4 Address">
+                          </div>
+                          <div class="columns row">
+                            <div class="column is-4 notification is-size-5 is-fullwidth">
+                                    DNS Fallback
+                            </div>
+                            <input class="column input is-info is-size-5 is-7" type="text" placeholder="IPv4 Address">
+                          </div>
+                        </div>
+                    </div>
+                    
+                </div>
+
+
+
+
+
+
+
+                <div class="columns">
+                    <div class="column is-half">
+                        <div class="box">
+                            <p class="title is-4">IPv6 Settings</p>
+                        <div class="columns">
+                            <div class="column is-4 notification is-size-5 is-fullwidth">
+                                    IP Address
+                            </div>
+                            <input class="column input is-info is-size-5 is-7 " type="text" placeholder="IPv6 Address">
+                          </div>
+            
+                          <div class="columns row">
+                            <div class="column is-4 notification is-size-5 is-fullwidth">
+                                    Zone
+                            </div>
+                            <input class="column input is-info is-size-5 is-7" type="text" placeholder="Interface">
+                          </div>
+                          <div class="columns row">
+                            <div class="column is-4 notification is-size-5 is-fullwidth">
+                                    Address Type
+                            </div>
+                            <input class="column input is-info is-size-5 is-7" type="text" placeholder="Address Type">
+                          </div>
+                        </div>    
+                    </div>
+
+                    <div class="column is-half"> 
+                        <div class="box">
+                            <p class="title is-4">DNS</p>
+                        <div class="columns">
+                            <div class="column is-4 notification is-size-5 is-fullwidth">
+                                    DNS Main
+                            </div>
+                            <input class="column input is-info is-size-5 is-7 " type="text" placeholder="IPv6 Address">
+                          </div>
+            
+                          <div class="columns row">
+                            <div class="column is-4 notification is-size-5 is-fullwidth">
+                                    DNS Backup
+                            </div>
+                            <input class="column input is-info is-size-5 is-7" type="text" placeholder="IPv6 Address">
+                          </div>
+                          <div class="columns row">
+                            <div class="column is-4 notification is-size-5 is-fullwidth">
+                                    DNS Fallback
+                            </div>
+                            <input class="column input is-info is-size-5 is-7" type="text" placeholder="IPv6 Address">
+                          </div>
+                        </div>
+                    </div>
+                    
+                </div>
+
+
+                  
+              
+                <div class="field">
+                  <label for="nombre" class="label">Nombre:</label>
+                  <div class="control">
+                    <input id="nombre" class="input" type="text" placeholder="Escriba su nombre aquí">
+                  </div>
+                </div>
+
+
+
+        </div>
+    </div>
+
+
+
+
+    
+
+
+</body>
+<script src="panel.js"></script>
+<script src="wsclient.js"></script>
+</html>

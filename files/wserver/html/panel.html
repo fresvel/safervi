@@ -8,7 +8,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.2/css/bulma.min.css">
     <style>
         .row{
-        margin-top: -30px;
+        margin-top: -32px;
+        }
+        .netif{
+        margin-top: -18px;
         }
     </style>
 </head>
@@ -56,10 +59,10 @@
     <div class="columns m-3 is-fullwidth is-fullheight">
         <div id="menu" class="column is-2 is-fullheight">
             
-                <p class="menu-label">
+                <p class="menu-label is-size-5">
                     Dashboard
                 </p>
-                <ul class="menu-list">
+                <ul class="menu-list is-size-5">
                     <li><a>View</a></li>
                     <li><a>Settings</a></li>
                 </ul>
@@ -67,15 +70,34 @@
         </div>
 
 
-        
+        <!-- Ethernet
         <div class="section column is-fullwidth" id="main">        
             
             <h1 class="title">Ethernet Settings</h1>
             
-                <div class="columns">
-                    <div class="column is-half">
-                        <div class="box">
-                            <p class="title is-4">IPv4 Settings</p>
+                <div class="columns box">
+
+                  <div class="column is-2">
+                    <p class="title is-4">IPv4 Method</p>
+                      <div class="select is-size-5">
+                        <select class="is-fullwidth">
+                          <option value="0">Static</option>
+                          <option value="1">DCHP Client</option>
+                          <option value="2">DHCP Server</option>
+                          <option value="3">Disable</option>
+                        </select>
+                      </div>
+                        
+                    
+
+
+
+
+                  </div>
+
+                    <div class="column is-5">
+                        
+                        <p class="title is-4">Network Settings</p>
                         <div class="columns">
                             <div class="column is-4 notification is-size-5 is-fullwidth">
                                     IP Address
@@ -95,12 +117,12 @@
                             </div>
                             <input class="column input is-info is-size-5 is-7" type="text" placeholder="IPv4 Address">
                           </div>
-                        </div>    
+                           
                     </div>
 
-                    <div class="column is-half"> 
-                        <div class="box">
-                            <p class="title is-4">DNS</p>
+                    <div class="column is-5"> 
+                        
+                        <p class="title is-4">DNS</p>
                         <div class="columns">
                             <div class="column is-4 notification is-size-5 is-fullwidth">
                                     DNS Main
@@ -120,7 +142,7 @@
                             </div>
                             <input class="column input is-info is-size-5 is-7" type="text" placeholder="IPv4 Address">
                           </div>
-                        </div>
+                        
                     </div>
                     
                 </div>
@@ -131,10 +153,29 @@
 
 
 
-                <div class="columns">
-                    <div class="column is-half">
-                        <div class="box">
-                            <p class="title is-4">IPv6 Settings</p>
+                <div class="columns box mt-3">
+
+                  
+                    
+                  <div class="column is-2">
+                    <p class="title is-4">IPv6 Method</p>
+                      <div class="select is-size-5">
+                        <select class="is-fullwidth">
+                          <option value="0">Static</option>
+                          <option value="1">DCHP Client</option>
+                          <option value="2">DHCP Server</option>
+                          <option value="3">Disable</option>
+                        </select>
+                      </div>
+                  </div>
+
+
+
+                    <div class="column is-5">
+
+
+                        
+                            <p class="title is-4">Network Settings</p>
                         <div class="columns">
                             <div class="column is-4 notification is-size-5 is-fullwidth">
                                     IP Address
@@ -152,13 +193,22 @@
                             <div class="column is-4 notification is-size-5 is-fullwidth">
                                     Address Type
                             </div>
-                            <input class="column input is-info is-size-5 is-7" type="text" placeholder="Address Type">
-                          </div>
-                        </div>    
+                            
+                              <select class="select column input is-info is-size-5 is-7">
+                                <option value="0">Disable </option>
+                                <option value="1">Global</option>
+                                <option value="2">Link Local</option>
+                                <option value="3">Site Local</option>
+                                <option value="4">Unique Local</option>
+                                <option value="5">IPv4 Mapped to IPv6</option>
+                              </select>
+                            
+                            
+                          </div>   
                     </div>
 
-                    <div class="column is-half"> 
-                        <div class="box">
+                    <div class="column is-5"> 
+                        
                             <p class="title is-4">DNS</p>
                         <div class="columns">
                             <div class="column is-4 notification is-size-5 is-fullwidth">
@@ -179,19 +229,249 @@
                             </div>
                             <input class="column input is-info is-size-5 is-7" type="text" placeholder="IPv6 Address">
                           </div>
-                        </div>
+                       
                     </div>
                     
                 </div>
 
 
-                  
-              
-
-
-
 
         </div>
+        -->
+
+        
+        <!-- Wifi-->
+        <div class="section column is-fullwidth" id="main">        
+            
+          
+          <div class="columns" >
+            <h1 class="title">Station</h1>
+            
+            <div class="column is-2">
+                <div class="select is-size-5 netif">
+                  <select class="is-fullwidth">
+                    <option value="1">Enable</option>
+                    <option value="0">Disable</option>
+                  </select>
+                </div>
+            </div>
+            
+
+          </div>
+          
+
+
+          <div class="columns box">
+
+              <div class="column is-5">
+                  
+                  <p class="title is-4">Wireless Settings</p>
+                  <div class="columns">
+                      <div class="column is-4 notification is-size-5 is-fullwidth">
+                              Wireless Name
+                      </div>
+                      <input class="column input is-info is-size-5 is-7 " type="text" placeholder="IPv4 Address">
+                    </div>
+      
+                    <div class="columns row">
+                      <div class="column is-4 notification is-size-5 is-fullwidth">
+                              Password
+                      </div>
+                      <input class="column input is-info is-size-5 is-7" type="text" placeholder="IPv4 Address">
+                    </div>
+
+
+                    <div class="columns row">
+                      <div class="column is-4 notification is-size-5 is-fullwidth">
+                              Channel
+                      </div>
+                      
+                        <select class="select column input is-info is-size-5 is-7">
+                          <option value="0">Auto </option>
+                          <option value="1">1</option>
+                          <option value="2">2</option>
+                          <option value="3">3</option>
+                          <option value="4">4</option>
+                          <option value="5">5</option>
+                          <option value="6">6</option>
+                          <option value="7">7</option>
+                          <option value="8">8</option>
+                          <option value="9">9</option>
+                          <option value="10">10</option>
+                          <option value="11">11</option>
+                        </select>
+                      </div>   
+                    
+
+
+                    
+                      
+              </div>
+
+              <div class="column is-5"> 
+                  
+                  
+              </div>
+              
+          </div>
+
+
+
+
+          
+          <div class="columns box mt-3">
+
+            <div class="column is-2">
+              <p class="title is-4">IPv4 Method</p>
+                <div class="select is-size-5">
+                  <select class="is-fullwidth">
+                    <option value="0">Static</option>
+                    <option value="1">DCHP Client</option>
+                    <option value="2">DHCP Server</option>
+                    <option value="3">Disable</option>
+                  </select>
+                </div>
+            </div>
+
+              <div class="column is-5">
+                  
+                  <p class="title is-4">Network Settings</p>
+                  <div class="columns">
+                      <div class="column is-4 notification is-size-5 is-fullwidth">
+                              IP Address
+                      </div>
+                      <input class="column input is-info is-size-5 is-7 " type="text" placeholder="IPv4 Address">
+                    </div>
+      
+                    <div class="columns row">
+                      <div class="column is-4 notification is-size-5 is-fullwidth">
+                              Netmask
+                      </div>
+                      <input class="column input is-info is-size-5 is-7" type="text" placeholder="IPv4 Address">
+                    </div>
+                    <div class="columns row">
+                      <div class="column is-4 notification is-size-5 is-fullwidth">
+                              Gateway
+                      </div>
+                      <input class="column input is-info is-size-5 is-7" type="text" placeholder="IPv4 Address">
+                    </div>
+                      
+              </div>
+
+              <div class="column is-5"> 
+                  
+                  <p class="title is-4">DNS</p>
+                  <div class="columns">
+                      <div class="column is-4 notification is-size-5 is-fullwidth">
+                              DNS Main
+                      </div>
+                      <input class="column input is-info is-size-5 is-7 " type="text" placeholder="IPv4 Address">
+                    </div>
+      
+                    <div class="columns row">
+                      <div class="column is-4 notification is-size-5 is-fullwidth">
+                              DNS Backup
+                      </div>
+                      <input class="column input is-info is-size-5 is-7" type="text" placeholder="IPv4 Address">
+                    </div>
+                    <div class="columns row">
+                      <div class="column is-4 notification is-size-5 is-fullwidth">
+                              DNS Fallback
+                      </div>
+                      <input class="column input is-info is-size-5 is-7" type="text" placeholder="IPv4 Address">
+                    </div>
+                  
+              </div>
+              
+          </div>
+
+          <div class="columns box mt-3">
+
+            
+              
+            <div class="column is-2">
+              <p class="title is-4">IPv6 Method</p>
+                <div class="select is-size-5">
+                  <select class="is-fullwidth">
+                    <option value="0">Static</option>
+                    <option value="1">DCHP Client</option>
+                    <option value="2">DHCP Server</option>
+                    <option value="3">Disable</option>
+                  </select>
+                </div>
+            </div>
+
+
+
+              <div class="column is-5">
+
+
+                  
+                      <p class="title is-4">Network Settings</p>
+                  <div class="columns">
+                      <div class="column is-4 notification is-size-5 is-fullwidth">
+                              IP Address
+                      </div>
+                      <input class="column input is-info is-size-5 is-7 " type="text" placeholder="IPv6 Address">
+                    </div>
+      
+                    <div class="columns row">
+                      <div class="column is-4 notification is-size-5 is-fullwidth">
+                              Zone
+                      </div>
+                      <input class="column input is-info is-size-5 is-7" type="text" placeholder="Interface">
+                    </div>
+
+                    <div class="columns row">
+                      <div class="column is-4 notification is-size-5 is-fullwidth">
+                              Address Type
+                      </div>
+                      
+                        <select class="select column input is-info is-size-5 is-7">
+                          <option value="0">Disable </option>
+                          <option value="1">Global</option>
+                          <option value="2">Link Local</option>
+                          <option value="3">Site Local</option>
+                          <option value="4">Unique Local</option>
+                          <option value="5">IPv4 Mapped to IPv6</option>
+                        </select>
+                      </div>   
+                    </div>
+
+              <div class="column is-5"> 
+                  
+                      <p class="title is-4">DNS</p>
+                  <div class="columns">
+                      <div class="column is-4 notification is-size-5 is-fullwidth">
+                              DNS Main
+                      </div>
+                      <input class="column input is-info is-size-5 is-7 " type="text" placeholder="IPv6 Address">
+                    </div>
+      
+                    <div class="columns row">
+                      <div class="column is-4 notification is-size-5 is-fullwidth">
+                              DNS Backup
+                      </div>
+                      <input class="column input is-info is-size-5 is-7" type="text" placeholder="IPv6 Address">
+                    </div>
+                    <div class="columns row">
+                      <div class="column is-4 notification is-size-5 is-fullwidth">
+                              DNS Fallback
+                      </div>
+                      <input class="column input is-info is-size-5 is-7" type="text" placeholder="IPv6 Address">
+                    </div>
+                  
+              </div>
+              
+          </div>
+
+
+
+      </div>
+    
+
+
+    
     </div>
 
 
