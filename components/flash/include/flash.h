@@ -122,4 +122,3 @@ esp_err_t flash__network_get_label(void* flash_buff, const char* label, size_t r
 
 esp_err_t flash_network_init();
 
-void show_file(void);

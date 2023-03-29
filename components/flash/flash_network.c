@@ -137,12 +137,3 @@ esp_err_t flash_network_init(){
     }
     return err;
 }
-
-void show_file(void)
-{
-ESP_LOGI(TAG, "Memoria no Volatil");
-
-    extern const uint8_t index_html[] asm("_binary_index_html_start");
-    ESP_LOGW(TAG, "Archivo HTML: %s", index_html);
-
-}

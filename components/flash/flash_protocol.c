@@ -1,10 +1,13 @@
 #include <files.h>
 #include <esp_spiffs.h>
 #include <esp_log.h>
+#include <string.h>
+#include <esp_system.h>
+//#include "esp_heap_caps.h"
 
 static const char*TAG = "Files";
 
-void get_file(void*){
+void get_file(char* file_path){
 
  esp_vfs_spiffs_conf_t conf = {
       .base_path = "/spiffs",
@@ -47,6 +50,62 @@ void get_file(void*){
     } else {
         ESP_LOGI(TAG, "Partition size: total: %d, used: %d", total, used);
     }    
+
+
+
+    size_t heap_size = esp_get_free_heap_size();
+    printf("Heap size: %d bytes\n", heap_size);
+
+        
+
+
+
+
+    ESP_LOGI(TAG, "Reading hello.txt");
+    FILE* fhello = fopen(file_path, "r");
+    if (fhello == NULL) {
+        ESP_LOGE(TAG, "Failed to open hello.txt");
+        return;
+    }
+
+
+    fseek(fhello, 0, SEEK_END);
+    long fsize = ftell(fhello)+1;
+    rewind(fhello);
+    ESP_LOGI(TAG, "Tamaño del hello.txt%ld bytes\n", fsize);
+    size_t block_size = (size_t)heap_size/4;//25% de la memoria libre
+    if(fsize>block_size){
+        for(int i=0; i<=(int)(fsize/block_size); i++){
+            char buf[block_size+1];
+            memset(buf, 0, block_size+1);
+            fread(buf, 1, block_size, fhello);
+            printf("%s\n", buf);
+        }
+    }else{
+    char buf[fsize];
+    memset(buf, 0, fsize);
+    fread(buf, 1, fsize, fhello);
+    printf("%s", buf);
+    }
+
+
+
+
+        fclose(fhello);
+    
+    // Display the read contents from the file
+    
+
+
+
+
+
+    
+
+
+    esp_vfs_spiffs_unregister(conf.partition_label);
+    ESP_LOGI(TAG, "Sistema de archivos desmontado");
+
 
 }
 
