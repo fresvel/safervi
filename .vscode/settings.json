@@ -22,7 +22,9 @@
         "freertos.h": "c",
         "esp_spiffs.h": "c",
         "esp_log.h": "c",
-        "*.tcc": "c"
+        "*.tcc": "c",
+        "esp_https_server.h": "c",
+        "sockets.h": "c"
     },
     "idf.flashType": "UART",
     "idf.port": "/dev/ttyUSB0"

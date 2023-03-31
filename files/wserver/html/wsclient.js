@@ -40,5 +40,5 @@ window.addEventListener('load', onLoad);
 
     
     function toggle() {
-        websocket.send('toggle');
+        websocket.send('toggle mundo');
     }

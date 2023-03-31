@@ -88,6 +88,8 @@ btn_net.addEventListener('click', () => {
 
 
 btn_test.addEventListener('click', ()=>{
+
+    toggle();
     
     div_main.innerHTML=`
 

@@ -5,6 +5,7 @@
 #include "esp_log.h"
 
 #include "files.h"
+#include "wserver.h"
 
 
 //#include "flash.h"
@@ -48,5 +49,9 @@ get_file("/spiffs/network/index.html");
     flash_ast_t ast_rec = {};
     ESP_LOGE(TAG, "Estado de GET %s",esp_err_to_name(flash_ast_write(flash_ast_get(&ast_config))));
     */
+
+
+   start_wserver();
+
 
 }
